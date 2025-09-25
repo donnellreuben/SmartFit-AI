@@ -397,6 +397,20 @@ class SubscriptionService {
     };
   }
 
+  // MARK: - Testing Support
+  resetSubscriptionStatus(): void {
+    this.subscriptionStatus = {
+      isActive: false,
+      planId: null,
+      startDate: null,
+      endDate: null,
+      isTrial: false,
+      trialEndDate: null,
+      autoRenew: false,
+      platform: Platform.OS === 'ios' ? 'ios' : 'android',
+    };
+  }
+
   // MARK: - Usage Tracking
   async trackUsage(feature: string, action: string): Promise<void> {
     try {

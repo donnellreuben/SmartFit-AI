@@ -11,16 +11,7 @@ describe('SubscriptionService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset subscription status to default state
-    subscriptionService.subscriptionStatus = {
-      isActive: false,
-      planId: null,
-      startDate: null,
-      endDate: null,
-      isTrial: false,
-      trialEndDate: null,
-      autoRenew: false,
-      platform: 'ios',
-    };
+    subscriptionService.resetSubscriptionStatus();
   });
 
   describe('getAvailablePlans', () => {
