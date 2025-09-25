@@ -356,7 +356,7 @@ class I18nService {
     return this.supportedLanguages.find(lang => lang.code === this.currentLanguage);
   }
 
-  isRTL(): boolean {
+  getIsRTL(): boolean {
     return this.isRTL;
   }
 
@@ -461,11 +461,11 @@ class I18nService {
 
   // MARK: - RTL Support
   getTextDirection(): 'ltr' | 'rtl' {
-    return this.isRTL ? 'rtl' : 'ltr';
+    return this.getIsRTL() ? 'rtl' : 'ltr';
   }
 
   getTextAlignment(): 'left' | 'right' {
-    return this.isRTL ? 'right' : 'left';
+    return this.getIsRTL() ? 'right' : 'left';
   }
 
   // MARK: - Localized Content

@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { SmartFitButton } from './SmartFitButton';
 import { SmartFitCard } from './SmartFitCard';
 import { theme } from '../constants/theme';
 

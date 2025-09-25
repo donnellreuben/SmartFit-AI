@@ -44,7 +44,7 @@ export interface BusinessMetrics {
   featureAdoption: { [key: string]: number };
 }
 
-export interface A/BTest {
+export interface ABTest {
   id: string;
   name: string;
   description: string;
@@ -71,7 +71,7 @@ class AnalyticsService {
   private userId: string = '';
   private deviceId: string = '';
   private isInitialized: boolean = false;
-  private abTests: A/BTest[] = [];
+  private abTests: ABTest[] = [];
 
   static getInstance(): AnalyticsService {
     if (!AnalyticsService.instance) {
@@ -441,9 +441,9 @@ class AnalyticsService {
   }
 
   // MARK: - A/B Testing
-  async createABTest(test: Omit<A/BTest, 'id' | 'status'>): Promise<string> {
+  async createABTest(test: Omit<ABTest, 'id' | 'status'>): Promise<string> {
     try {
-      const abTest: A/BTest = {
+      const abTest: ABTest = {
         ...test,
         id: `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         status: 'draft',

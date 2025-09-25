@@ -12,7 +12,7 @@ import { RNCamera } from 'react-native-camera';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { theme } from '../constants/theme';
 
-const { width, height } = Dimensions.get('window');
+  // const { width, height } = Dimensions.get('window');
 
 export interface CameraComponentProps {
   onImageCaptured: (imageUri: string) => void;

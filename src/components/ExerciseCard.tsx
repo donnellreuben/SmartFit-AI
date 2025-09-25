@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
 } from 'react-native';
 import { SmartFitCard } from './SmartFitCard';
 import { theme } from '../constants/theme';

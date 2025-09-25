@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { WorkoutPlan, Exercise } from '../store/workoutStore';
+import { WorkoutPlan } from '../store/workoutStore';
 
 export interface OfflineWorkoutPlan {
   id: string;
@@ -20,7 +20,7 @@ export interface OfflineExercise {
   name: string;
   muscleGroups: string[];
   equipment: string[];
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   sets: number;
   reps: string;
   restTime: number;
@@ -100,11 +100,14 @@ class OfflineService {
     try {
       const offlinePlan: OfflineWorkoutPlan = {
         ...workoutPlan,
+        focusAreas: [], // Will be populated from exercises
+        equipment: [], // Will be populated from exercises
         isDownloaded: true,
         downloadDate: new Date().toISOString(),
         fileSize: this.calculateWorkoutPlanSize(workoutPlan),
         exercises: workoutPlan.exercises.map(exercise => ({
           ...exercise,
+          alternatives: exercise.alternatives.map(alt => alt.name || alt.toString()),
           isVideoDownloaded: false,
         }))
       };
@@ -275,7 +278,7 @@ class OfflineService {
   async getOfflineProgress(): Promise<any[]> {
     try {
       const keys = await AsyncStorage.getAllKeys();
-      const progressKeys = keys.filter(key => key.startsWith('offline_progress_'));
+      const progressKeys = keys.filter((key: string) => key.startsWith('offline_progress_'));
       const progressData: any[] = [];
 
       for (const key of progressKeys) {
@@ -355,7 +358,7 @@ class OfflineService {
     }
     
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise<void>(resolve => setTimeout(resolve, 1000));
   }
 
   private async removeFromSyncQueue(itemId: string): Promise<void> {
@@ -387,7 +390,7 @@ class OfflineService {
       
       for (const plan of cachedPlans) {
         totalSize += plan.fileSize;
-        videoCount += plan.exercises.filter(ex => ex.isVideoDownloaded).length;
+        videoCount += plan.exercises.filter((ex: OfflineExercise) => ex.isVideoDownloaded).length;
       }
       
       for (const progress of progressData) {
@@ -414,7 +417,7 @@ class OfflineService {
   async clearOfflineData(): Promise<void> {
     try {
       const keys = await AsyncStorage.getAllKeys();
-      const offlineKeys = keys.filter(key => 
+      const offlineKeys = keys.filter((key: string) => 
         key.startsWith('offline_') || 
         key.startsWith('cached_') ||
         key === 'sync_queue'
