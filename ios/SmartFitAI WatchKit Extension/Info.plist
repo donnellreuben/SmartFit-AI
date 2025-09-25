@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>SmartFit AI</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>WKCompanionAppBundleIdentifier</key>
+	<string>com.smartfitai.SmartFitAI</string>
+	<key>WKWatchOnly</key>
+	<true/>
+	<key>WKApplication</key>
+	<true/>
+	<key>WKCompanionAppBundleIdentifier</key>
+	<string>com.smartfitai.SmartFitAI</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>workout-processing</string>
+		<string>health-kit</string>
+	</array>
+	<key>NSHealthShareUsageDescription</key>
+	<string>SmartFit AI needs access to your health data to track workouts and provide personalized fitness insights.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>SmartFit AI needs to write workout data to HealthKit to track your fitness progress.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>SmartFit AI uses motion data to track your workout activities and provide accurate fitness metrics.</string>
+</dict>
+</plist>
