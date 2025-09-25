@@ -137,11 +137,11 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
 
         const updatedExercises = currentWorkout.exercises.map(exercise => {
           if (exercise.exerciseId === exerciseId) {
-            const updatedSets = exercise.sets.map(set => {
-              if (set.setNumber === setNumber) {
-                return { ...set, ...data, completed: true };
+            const updatedSets = exercise.sets.map(setItem => {
+              if (setItem.setNumber === setNumber) {
+                return { ...setItem, ...data, completed: true };
               }
-              return set;
+              return setItem;
             });
             return { ...exercise, sets: updatedSets };
           }

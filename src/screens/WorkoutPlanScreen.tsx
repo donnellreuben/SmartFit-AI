@@ -5,14 +5,13 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
 import { ExerciseCard, Exercise } from '../components/ExerciseCard';
-import { aiService } from '../services/aiService';
+// import { aiService } from '../services/aiService';
 import { useWorkoutStore } from '../store/workoutStore';
 import { theme } from '../constants/theme';
 
@@ -119,7 +118,7 @@ const mockExercises: Exercise[] = [
 ];
 
 const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => {
-  const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
+  const [_selectedExercises, _setSelectedExercises] = useState<string[]>([]);
   const [workoutStarted, setWorkoutStarted] = useState(false);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
   
@@ -219,7 +218,7 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
           {/* Exercise List */}
           <View style={styles.exercisesSection}>
             <Text style={styles.sectionTitle}>Today's Exercises</Text>
-            {mockExercises.map((exercise, index) => (
+            {mockExercises.map((exercise, _index) => (
               <ExerciseCard
                 key={exercise.id}
                 exercise={exercise}

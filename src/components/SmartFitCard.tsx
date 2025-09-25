@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  StyleSheet,
   ViewStyle,
   TouchableOpacity,
   TouchableOpacityProps,
@@ -106,6 +105,6 @@ export const SmartFitCard: React.FC<SmartFitCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  // Additional styles can be added here if needed
-});
+// const styles = StyleSheet.create({
+//   // Additional styles can be added here if needed
+// });

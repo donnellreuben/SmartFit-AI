@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Alert,
-  Image,
   Modal,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -28,7 +27,7 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
   const [capturedImages, setCapturedImages] = useState<string[]>([]);
   const [showCamera, setShowCamera] = useState(false);
   const [detectedEquipment, setDetectedEquipment] = useState<EquipmentDetection[]>([]);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
+  const [_analysisResults, _setAnalysisResults] = useState<any>(null);
 
   const handleTakePhoto = () => {
     setShowCamera(true);
@@ -135,7 +134,7 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
         {detectedEquipment.length > 0 && (
           <View style={styles.detectedEquipmentSection}>
             <Text style={styles.sectionTitle}>Detected Equipment</Text>
-            {detectedEquipment.map((equipment, index) => (
+            {detectedEquipment.map((equipment, _index) => (
               <SmartFitCard key={equipment.id} style={styles.equipmentCard}>
                 <View style={styles.equipmentInfo}>
                   <Text style={styles.equipmentName}>{equipment.name}</Text>

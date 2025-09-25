@@ -32,9 +32,9 @@ export const SocialShare: React.FC<SocialShareProps> = ({
   onClose,
   style,
 }) => {
-  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [_selectedPlatform, _setSelectedPlatform] = useState<string | null>(null);
   const [includePhoto, setIncludePhoto] = useState(false);
-  const [customMessage, setCustomMessage] = useState('');
+  const [_customMessage, _setCustomMessage] = useState('');
 
   const generateShareText = () => {
     const baseText = `🏋️ Just completed "${workoutData.workoutName}"!\n\n` +

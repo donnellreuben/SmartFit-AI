@@ -62,7 +62,7 @@ class AIService {
   /**
    * Analyze equipment from captured images
    */
-  async analyzeEquipment(images: string[]): Promise<EquipmentAnalysisResult> {
+  async analyzeEquipment(_images: string[]): Promise<EquipmentAnalysisResult> {
     try {
       // Simulate API call to AI service
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -212,7 +212,7 @@ class AIService {
   /**
    * Analyze exercise form from video
    */
-  async analyzeExerciseForm(videoUri: string, exerciseType: string): Promise<{
+  async analyzeExerciseForm(_videoUri: string, _exerciseType: string): Promise<{
     score: number;
     feedback: string[];
     improvements: string[];
@@ -244,9 +244,9 @@ class AIService {
    * Get exercise recommendations based on current workout
    */
   async getExerciseRecommendations(
-    currentExercises: string[],
-    availableEquipment: string[],
-    goals: string[]
+    _currentExercises: string[],
+    _availableEquipment: string[],
+    _goals: string[]
   ): Promise<WorkoutExercise[]> {
     try {
       // Simulate recommendation engine
@@ -288,9 +288,9 @@ class AIService {
    * Get nutritional recommendations based on workout goals
    */
   async getNutritionalRecommendations(
-    goals: string[],
-    currentWeight: number,
-    targetWeight?: number
+    _goals: string[],
+    _currentWeight: number,
+    _targetWeight?: number
   ): Promise<{
     dailyCalories: number;
     macronutrients: {

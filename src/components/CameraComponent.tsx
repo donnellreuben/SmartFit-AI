@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';

@@ -2,7 +2,6 @@ import React from 'react';
 import {
   TouchableOpacity,
   Text,
-  StyleSheet,
   ViewStyle,
   TextStyle,
   ActivityIndicator,
@@ -137,6 +136,6 @@ export const SmartFitButton: React.FC<SmartFitButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  // Additional styles can be added here if needed
-});
+// const styles = StyleSheet.create({
+//   // Additional styles can be added here if needed
+// });

@@ -450,7 +450,7 @@ class I18nService {
 
     // Cultural preferences based on language/region
     const imperialUnits = ['en-US', 'en-GB']; // English-speaking countries
-    const metricUnits = ['es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'he'];
+    // const metricUnits = ['es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'he'];
 
     return {
       preferredUnits: imperialUnits.includes(language.numberFormat) ? 'imperial' : 'metric',

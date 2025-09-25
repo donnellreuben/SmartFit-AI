@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -35,7 +35,7 @@ export const RestTimer: React.FC<RestTimerProps> = ({
   const [isCompleted, setIsCompleted] = useState(false);
   
   const timerRef = useRef<NodeJS.Timeout>();
-  const intervalRef = useRef<NodeJS.Timeout>();
+  // const intervalRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (!isPaused && timeRemaining > 0) {
@@ -55,7 +55,7 @@ export const RestTimer: React.FC<RestTimerProps> = ({
         clearTimeout(timerRef.current);
       }
     };
-  }, [timeRemaining, isPaused]);
+  }, [timeRemaining, isPaused, handleComplete]);
 
   useEffect(() => {
     // Haptic feedback at specific intervals
@@ -64,11 +64,11 @@ export const RestTimer: React.FC<RestTimerProps> = ({
     }
   }, [timeRemaining]);
 
-  const handleComplete = () => {
+  const handleComplete = useCallback(() => {
     setIsCompleted(true);
     Vibration.vibrate([0, 500, 200, 500, 200, 500]); // Completion vibration pattern
     onComplete();
-  };
+  }, [onComplete]);
 
   const handlePause = () => {
     setIsPaused(!isPaused);

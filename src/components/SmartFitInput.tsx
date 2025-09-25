@@ -89,7 +89,7 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
       },
     };
 
-    const errorStyle: ViewStyle = error
+    const errorBorderStyle: ViewStyle = error
       ? {
           borderColor: theme.colors.error,
         }
@@ -99,7 +99,7 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
       ...baseStyle,
       ...sizeStyles[size],
       ...variantStyles[variant],
-      ...errorStyle,
+      ...errorBorderStyle,
     };
   };
 

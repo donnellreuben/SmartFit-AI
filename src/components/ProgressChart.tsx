@@ -89,36 +89,36 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
     return { x, y };
   };
 
-  const generatePath = () => {
-    if (data.length < 2) return '';
-    
-    let path = `M 0 ${CHART_HEIGHT}`;
-    
-    data.forEach((point, index) => {
-      const { x, y } = getPointPosition(point, index);
-      if (index === 0) {
-        path += ` L ${x} ${y}`;
-      } else {
-        path += ` L ${x} ${y}`;
-      }
-    });
-    
-    return path;
-  };
+  // const generatePath = () => {
+  //   if (data.length < 2) return '';
+  //   
+  //   let path = `M 0 ${CHART_HEIGHT}`;
+  //   
+  //   data.forEach((point, index) => {
+  //     const { x, y } = getPointPosition(point, index);
+  //     if (index === 0) {
+  //       path += ` L ${x} ${y}`;
+  //     } else {
+  //       path += ` L ${x} ${y}`;
+  //     }
+  //   });
+  //   
+  //   return path;
+  // };
 
-  const generateAreaPath = () => {
-    if (data.length < 2) return '';
-    
-    let path = `M 0 ${CHART_HEIGHT}`;
-    
-    data.forEach((point, index) => {
-      const { x, y } = getPointPosition(point, index);
-      path += ` L ${x} ${y}`;
-    });
-    
-    path += ` L ${CHART_WIDTH} ${CHART_HEIGHT} Z`;
-    return path;
-  };
+  // const generateAreaPath = () => {
+  //   if (data.length < 2) return '';
+  //   
+  //   let path = `M 0 ${CHART_HEIGHT}`;
+  //   
+  //   data.forEach((point, index) => {
+  //     const { x, y } = getPointPosition(point, index);
+  //     path += ` L ${x} ${y}`;
+  //   });
+  //   
+  //   path += ` L ${CHART_WIDTH} ${CHART_HEIGHT} Z`;
+  //   return path;
+  // };
 
   return (
     <View style={[styles.container, style]}>

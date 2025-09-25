@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -63,7 +62,7 @@ const mockWeightProgression = [
   { date: '2024-01-15', weight: 80.0, exercise: 'Bench Press' },
 ];
 
-const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigation }) => {
+const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigation: _navigation }) => {
   const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'year'>('month');
 
   const getTotalWorkouts = () => {
@@ -78,9 +77,9 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
     return mockWorkoutHistory.reduce((acc, workout) => acc + workout.calories, 0);
   };
 
-  const getAverageWorkoutDuration = () => {
-    return Math.round(getTotalDuration() / mockWorkoutHistory.length);
-  };
+  // const getAverageWorkoutDuration = () => {
+  //   return Math.round(getTotalDuration() / mockWorkoutHistory.length);
+  // };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

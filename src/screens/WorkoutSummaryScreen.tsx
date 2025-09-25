@@ -23,9 +23,9 @@ interface WorkoutSummaryScreenProps {
 
 const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation }) => {
   const { workoutHistory } = useWorkoutStore();
-  const [workout, setWorkout] = useState(workoutHistory[0]); // Most recent workout
+  const [workout, _setWorkout] = useState(workoutHistory[0]); // Most recent workout
   const [showNotes, setShowNotes] = useState(false);
-  const [notes, setNotes] = useState(workout?.notes || '');
+  const [notes, _setNotes] = useState(workout?.notes || '');
 
   if (!workout) {
     return (
@@ -162,7 +162,7 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
           <SmartFitCard style={styles.exercisesCard}>
             <Text style={styles.cardTitle}>Exercise Breakdown</Text>
             
-            {workout.exercises.map((exercise, index) => (
+            {workout.exercises.map((exercise, _index) => (
               <View key={exercise.exerciseId} style={styles.exerciseItem}>
                 <View style={styles.exerciseHeader}>
                   <Text style={styles.exerciseName}>{exercise.name}</Text>

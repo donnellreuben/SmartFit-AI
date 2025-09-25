@@ -11,7 +11,7 @@ import {
 import Video, { VideoRef } from 'react-native-video';
 import { theme } from '../constants/theme';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export interface VideoPlayerProps {
   videoUrl: string;

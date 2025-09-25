@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform, Dimensions } from 'react-native';
+import { Platform } from 'react-native';
 
 export interface AnalyticsEvent {
   id: string;
@@ -504,8 +504,8 @@ class AnalyticsService {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
+      hash = ((hash * 32) - hash) + char;
+      hash = Math.abs(hash); // Convert to positive integer
     }
     return Math.abs(hash) / 2147483647; // Normalize to 0-1
   }
