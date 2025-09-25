@@ -55,7 +55,9 @@ jest.mock('react-native/Libraries/Utilities/PixelRatio', () => ({
 // Mock StyleSheet
 jest.mock('react-native/Libraries/StyleSheet/StyleSheet', () => ({
   create: jest.fn(styles => styles),
-  flatten: jest.fn(style => style),
+  flatten: jest.fn(style =>
+    Array.isArray(style) ? style.filter(Boolean) : style,
+  ),
   absoluteFill: {},
   absoluteFillObject: {},
   hairlineWidth: 1,
