@@ -72,7 +72,7 @@ describe('AuthStore', () => {
       
       // First login
       await login('test@example.com', 'password123');
-      const originalToken = useAuthStore.getState().accessToken;
+      // const originalToken = useAuthStore.getState().accessToken;
       
       // Refresh token
       await refreshToken();

@@ -69,7 +69,7 @@ describe('MonetizationService', () => {
     it('should update feature usage', async () => {
       const features = monetizationService.getFeatures();
       if (features.length > 0) {
-        const initialCount = features[0].usageCount;
+        // const initialCount = features[0].usageCount;
         
         await monetizationService.updateFeatureUsage(features[0].id);
         

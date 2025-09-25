@@ -147,18 +147,18 @@ describe('Complete User Journey E2E', () => {
 
   describe('Subscription Flow Journey', () => {
     it('should complete subscription purchase flow', async () => {
-      const { getByText, getByPlaceholderText } = renderWithNavigation();
+      const { getByText } = renderWithNavigation();
       
       // Navigate to subscription screen
       // This would typically be accessed from a settings menu or upgrade prompt
       // For testing, we'll simulate navigation
       
       // Mock navigation to subscription screen
-      const subscriptionScreen = render(
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      );
+      // const subscriptionScreen = render(
+      //   <NavigationContainer>
+      //     <AppNavigator />
+      //   </NavigationContainer>
+      // );
       
       // Check subscription plans are displayed
       expect(getByText('Choose Your Plan')).toBeTruthy();
@@ -260,7 +260,7 @@ describe('Complete User Journey E2E', () => {
 
   describe('Error Handling Journey', () => {
     it('should handle network errors gracefully', async () => {
-      const { getByText, getByPlaceholderText } = renderWithNavigation();
+      const { getByText } = renderWithNavigation();
       
       // Simulate network error during login
       const emailInput = getByPlaceholderText('Email');
@@ -278,7 +278,7 @@ describe('Complete User Journey E2E', () => {
     });
 
     it('should handle validation errors', async () => {
-      const { getByText, getByPlaceholderText } = renderWithNavigation();
+      const { getByText } = renderWithNavigation();
       
       // Navigate to profile setup
       fireEvent.press(getByText('Get Started'));
