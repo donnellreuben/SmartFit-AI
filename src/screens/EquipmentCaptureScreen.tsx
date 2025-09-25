@@ -7,11 +7,14 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  Modal,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
 import { SmartFitCard } from '../components/SmartFitCard';
+import CameraComponent from '../components/CameraComponent';
+import { aiService, EquipmentDetection } from '../services/aiService';
 import { theme } from '../constants/theme';
 
 type EquipmentCaptureScreenNavigationProp = StackNavigationProp<RootStackParamList, 'EquipmentCapture'>;
@@ -23,23 +26,21 @@ interface EquipmentCaptureScreenProps {
 const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigation }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [capturedImages, setCapturedImages] = useState<string[]>([]);
+  const [showCamera, setShowCamera] = useState(false);
+  const [detectedEquipment, setDetectedEquipment] = useState<EquipmentDetection[]>([]);
+  const [analysisResults, setAnalysisResults] = useState<any>(null);
 
   const handleTakePhoto = () => {
-    Alert.alert(
-      'Camera',
-      'Camera functionality will be implemented with react-native-camera or expo-camera',
-      [
-        {
-          text: 'Simulate Photo',
-          onPress: () => {
-            // Simulate adding a photo
-            const newImage = `equipment_${Date.now()}`;
-            setCapturedImages(prev => [...prev, newImage]);
-          }
-        },
-        { text: 'Cancel', style: 'cancel' }
-      ]
-    );
+    setShowCamera(true);
+  };
+
+  const handleImageCaptured = (imageUri: string) => {
+    setCapturedImages(prev => [...prev, imageUri]);
+    setShowCamera(false);
+  };
+
+  const handleCloseCamera = () => {
+    setShowCamera(false);
   };
 
   const handleAnalyzeEquipment = async () => {
@@ -50,11 +51,25 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
 
     setIsAnalyzing(true);
     
-    // Simulate AI analysis
-    setTimeout(() => {
+    try {
+      // Call AI service to analyze equipment
+      const results = await aiService.analyzeEquipment(capturedImages);
+      setAnalysisResults(results);
+      setDetectedEquipment(results.detectedEquipment);
+      
+      Alert.alert(
+        'Analysis Complete!',
+        `Found ${results.detectedEquipment.length} pieces of equipment with ${Math.round(results.totalConfidence * 100)}% confidence.`,
+        [
+          { text: 'View Results', onPress: () => {} },
+          { text: 'Continue', onPress: () => navigation.navigate('WorkoutPlan') }
+        ]
+      );
+    } catch (error) {
+      Alert.alert('Analysis Failed', 'Could not analyze equipment. Please try again.');
+    } finally {
       setIsAnalyzing(false);
-      navigation.navigate('WorkoutPlan');
-    }, 3000);
+    }
   };
 
   const removeImage = (index: number) => {
@@ -116,6 +131,27 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
           </View>
         )}
 
+        {/* Detected Equipment */}
+        {detectedEquipment.length > 0 && (
+          <View style={styles.detectedEquipmentSection}>
+            <Text style={styles.sectionTitle}>Detected Equipment</Text>
+            {detectedEquipment.map((equipment, index) => (
+              <SmartFitCard key={equipment.id} style={styles.equipmentCard}>
+                <View style={styles.equipmentInfo}>
+                  <Text style={styles.equipmentName}>{equipment.name}</Text>
+                  <Text style={styles.equipmentCategory}>{equipment.category}</Text>
+                  <View style={styles.confidenceContainer}>
+                    <Text style={styles.confidenceLabel}>Confidence:</Text>
+                    <Text style={styles.confidenceValue}>
+                      {Math.round(equipment.confidence * 100)}%
+                    </Text>
+                  </View>
+                </View>
+              </SmartFitCard>
+            ))}
+          </View>
+        )}
+
         {/* Action Buttons */}
         <View style={styles.buttonSection}>
           {capturedImages.length > 0 && !isAnalyzing && (
@@ -136,6 +172,20 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
           )}
         </View>
       </View>
+
+      {/* Camera Modal */}
+      <Modal
+        visible={showCamera}
+        animationType="slide"
+        presentationStyle="fullScreen"
+      >
+        <CameraComponent
+          onImageCaptured={handleImageCaptured}
+          onClose={handleCloseCamera}
+          maxImages={10}
+          currentImageCount={capturedImages.length}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -274,6 +324,44 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     // Additional styles if needed
+  },
+  detectedEquipmentSection: {
+    marginBottom: theme.spacing[6],
+  },
+  sectionTitle: {
+    ...theme.typography.h3,
+    color: theme.colors.text,
+    marginBottom: theme.spacing[4],
+  },
+  equipmentCard: {
+    marginBottom: theme.spacing[3],
+  },
+  equipmentInfo: {
+    flex: 1,
+  },
+  equipmentName: {
+    ...theme.typography.h3,
+    color: theme.colors.text,
+    marginBottom: theme.spacing[1],
+  },
+  equipmentCategory: {
+    ...theme.typography.body,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing[2],
+  },
+  confidenceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing[2],
+  },
+  confidenceLabel: {
+    ...theme.typography.caption,
+    color: theme.colors.textSecondary,
+  },
+  confidenceValue: {
+    ...theme.typography.caption,
+    color: theme.colors.accent,
+    fontWeight: '600',
   },
 });
 

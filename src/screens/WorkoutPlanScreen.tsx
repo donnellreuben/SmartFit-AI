@@ -12,6 +12,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
 import { ExerciseCard, Exercise } from '../components/ExerciseCard';
+import { aiService } from '../services/aiService';
+import { useWorkoutStore } from '../store/workoutStore';
 import { theme } from '../constants/theme';
 
 type WorkoutPlanScreenNavigationProp = StackNavigationProp<RootStackParamList, 'WorkoutPlan'>;
@@ -119,6 +121,9 @@ const mockExercises: Exercise[] = [
 const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => {
   const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
   const [workoutStarted, setWorkoutStarted] = useState(false);
+  const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+  
+  const { startWorkout, activePlan, generateWorkoutPlan } = useWorkoutStore();
 
   const handleExercisePress = (exercise: Exercise) => {
     Alert.alert(
@@ -135,13 +140,42 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
     Alert.alert('Video Player', `Playing video for ${exercise.name}`);
   };
 
-  const handleStartWorkout = () => {
+  const handleStartWorkout = async () => {
+    if (!activePlan) {
+      await handleGeneratePlan();
+      return;
+    }
+    
+    startWorkout(activePlan);
     setWorkoutStarted(true);
     Alert.alert(
       'Workout Started!',
       'Your personalized workout plan is ready. Good luck!',
       [{ text: 'Let\'s Go!', onPress: () => {} }]
     );
+  };
+
+  const handleGeneratePlan = async () => {
+    setIsGeneratingPlan(true);
+    
+    try {
+      // Mock equipment and goals - in real app, these would come from user data
+      const equipment = ['Dumbbells', 'Bench', 'Barbell'];
+      const goals = ['Muscle Gain', 'Strength'];
+      const duration = 45;
+      
+      await generateWorkoutPlan(equipment, goals, duration);
+      
+      Alert.alert(
+        'Plan Generated!',
+        'Your AI-powered workout plan is ready!',
+        [{ text: 'View Plan', onPress: () => {} }]
+      );
+    } catch (error) {
+      Alert.alert('Error', 'Failed to generate workout plan. Please try again.');
+    } finally {
+      setIsGeneratingPlan(false);
+    }
   };
 
   const handleProgressTracking = () => {
@@ -203,12 +237,23 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
           {/* Action Buttons */}
           <View style={styles.buttonSection}>
             {!workoutStarted ? (
-              <SmartFitButton
-                title="Start Workout"
-                onPress={handleStartWorkout}
-                size="large"
-                style={styles.startButton}
-              />
+              <View style={styles.workoutButtons}>
+                <SmartFitButton
+                  title={activePlan ? "Start Workout" : "Generate AI Plan"}
+                  onPress={handleStartWorkout}
+                  loading={isGeneratingPlan}
+                  size="large"
+                  style={styles.startButton}
+                />
+                {!activePlan && (
+                  <SmartFitButton
+                    title="Use Sample Plan"
+                    onPress={() => Alert.alert('Sample Plan', 'Using sample workout plan')}
+                    variant="outline"
+                    style={styles.sampleButton}
+                  />
+                )}
+              </View>
             ) : (
               <View style={styles.activeWorkoutButtons}>
                 <SmartFitButton
@@ -312,6 +357,13 @@ const styles = StyleSheet.create({
     // Additional styles if needed
   },
   progressButton: {
+    // Additional styles if needed
+  },
+  workoutButtons: {
+    gap: theme.spacing[3],
+    marginBottom: theme.spacing[2],
+  },
+  sampleButton: {
     // Additional styles if needed
   },
 });
