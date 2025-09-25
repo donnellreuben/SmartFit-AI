@@ -39,9 +39,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [showControlsOverlay, setShowControlsOverlay] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  
+
   const videoRef = useRef<VideoRef>(null);
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+  const controlsTimeoutRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     if (showControlsOverlay) {
@@ -121,11 +121,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           repeat={loop}
           rate={playbackRate}
           onProgress={handleProgress}
-          onLoad={handleLoad}
+          onLoad={data => {
+            handleLoad(data);
+            setIsLoading(false);
+          }}
           onError={handleError}
           resizeMode="contain"
           onLoadStart={() => setIsLoading(true)}
-          onLoadEnd={() => setIsLoading(false)}
         />
 
         {isLoading && (
@@ -162,14 +164,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
             {/* Bottom Controls */}
             <View style={styles.bottomControls}>
-              <Text style={styles.timeText}>
-                {formatTime(currentTime)}
-              </Text>
-              
+              <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
+
               <View style={styles.progressContainer}>
                 <TouchableOpacity
                   style={styles.progressBar}
-                  onPress={(event) => {
+                  onPress={event => {
                     const { locationX } = event.nativeEvent;
                     const progress = locationX / (width - 100);
                     const seekTime = progress * duration;
@@ -180,24 +180,22 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     <View
                       style={[
                         styles.progressFill,
-                        { width: `${(currentTime / duration) * 100}%` }
+                        { width: `${(currentTime / duration) * 100}%` },
                       ]}
                     />
                   </View>
                 </TouchableOpacity>
               </View>
-              
-              <Text style={styles.timeText}>
-                {formatTime(duration)}
-              </Text>
-              
+
+              <Text style={styles.timeText}>{formatTime(duration)}</Text>
+
               <TouchableOpacity
                 style={styles.rateButton}
                 onPress={handlePlaybackRateChange}
               >
                 <Text style={styles.rateButtonText}>{playbackRate}x</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 style={styles.fullscreenButton}
                 onPress={toggleFullscreen}
@@ -250,7 +248,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: theme.colors.text,
-    marginTop: theme.spacing[2],
+    marginTop: theme.spacing.sm,
     fontSize: 16,
   },
   controlsOverlay: {
@@ -266,15 +264,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[4],
-    paddingTop: theme.spacing[4],
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.lg,
   },
   videoTitle: {
     color: theme.colors.text,
     fontSize: 16,
     fontWeight: '600',
     flex: 1,
-    marginRight: theme.spacing[2],
+    marginRight: theme.spacing.sm,
   },
   closeButton: {
     width: 32,
@@ -309,9 +307,9 @@ const styles = StyleSheet.create({
   bottomControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[4],
-    paddingBottom: theme.spacing[4],
-    gap: theme.spacing[2],
+    paddingHorizontal: theme.spacing.lg,
+    paddingBottom: theme.spacing.lg,
+    gap: theme.spacing.sm,
   },
   timeText: {
     color: theme.colors.text,
@@ -344,8 +342,8 @@ const styles = StyleSheet.create({
     left: 0,
   },
   rateButton: {
-    paddingHorizontal: theme.spacing[2],
-    paddingVertical: theme.spacing[1],
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: theme.borderRadius.small,
   },

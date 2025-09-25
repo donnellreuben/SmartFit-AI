@@ -10,12 +10,16 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
-import { ExerciseCard, Exercise } from '../components/ExerciseCard';
+import { ExerciseCard } from '../components/ExerciseCard';
+import { Exercise } from '../types/exercise';
 // import { aiService } from '../services/aiService';
 import { useWorkoutStore } from '../store/workoutStore';
 import { theme } from '../constants/theme';
 
-type WorkoutPlanScreenNavigationProp = StackNavigationProp<RootStackParamList, 'WorkoutPlan'>;
+type WorkoutPlanScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'WorkoutPlan'
+>;
 
 interface WorkoutPlanScreenProps {
   navigation: WorkoutPlanScreenNavigationProp;
@@ -37,14 +41,14 @@ const mockExercises: Exercise[] = [
       'Lie on a bench with dumbbells in each hand',
       'Press the dumbbells up until arms are extended',
       'Lower with control to chest level',
-      'Repeat for desired reps'
+      'Repeat for desired reps',
     ],
     tips: [
       'Keep your core tight throughout the movement',
-      'Don\'t bounce the weights off your chest',
-      'Focus on controlled movement'
+      "Don't bounce the weights off your chest",
+      'Focus on controlled movement',
     ],
-    alternatives: []
+    alternatives: [],
   },
   {
     id: '2',
@@ -60,14 +64,14 @@ const mockExercises: Exercise[] = [
       'Stand with feet shoulder-width apart',
       'Lower your body as if sitting back into a chair',
       'Keep your chest up and core tight',
-      'Return to starting position'
+      'Return to starting position',
     ],
     tips: [
       'Keep your knees in line with your toes',
-      'Don\'t let your knees cave inward',
-      'Go as low as comfortable'
+      "Don't let your knees cave inward",
+      'Go as low as comfortable',
     ],
-    alternatives: []
+    alternatives: [],
   },
   {
     id: '3',
@@ -83,14 +87,14 @@ const mockExercises: Exercise[] = [
       'Hang from a pull-up bar with overhand grip',
       'Pull your body up until chin clears the bar',
       'Lower with control to full extension',
-      'Repeat for desired reps'
+      'Repeat for desired reps',
     ],
     tips: [
       'Engage your lats to initiate the movement',
       'Keep your core tight',
-      'Use a full range of motion'
+      'Use a full range of motion',
     ],
-    alternatives: []
+    alternatives: [],
   },
   {
     id: '4',
@@ -106,32 +110,36 @@ const mockExercises: Exercise[] = [
       'Start in push-up position',
       'Lower to forearms',
       'Keep body in straight line',
-      'Hold for desired time'
+      'Hold for desired time',
     ],
     tips: [
-      'Don\'t let your hips sag',
+      "Don't let your hips sag",
       'Keep your head neutral',
-      'Breathe normally'
+      'Breathe normally',
     ],
-    alternatives: []
-  }
+    alternatives: [],
+  },
 ];
 
-const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => {
+const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({
+  navigation,
+}) => {
   const [_selectedExercises, _setSelectedExercises] = useState<string[]>([]);
   const [workoutStarted, setWorkoutStarted] = useState(false);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
-  
+
   const { startWorkout, activePlan, generateWorkoutPlan } = useWorkoutStore();
 
   const handleExercisePress = (exercise: Exercise) => {
     Alert.alert(
       exercise.name,
-      `Instructions:\n${exercise.instructions.join('\n')}\n\nTips:\n${exercise.tips.join('\n')}`,
+      `Instructions:\n${exercise.instructions.join(
+        '\n',
+      )}\n\nTips:\n${exercise.tips.join('\n')}`,
       [
         { text: 'Watch Video', onPress: () => handleVideoPress(exercise) },
-        { text: 'Close', style: 'cancel' }
-      ]
+        { text: 'Close', style: 'cancel' },
+      ],
     );
   };
 
@@ -144,7 +152,7 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
       await handleGeneratePlan();
       return;
     }
-    
+
     startWorkout(activePlan);
     setWorkoutStarted(true);
     navigation.navigate('ActiveWorkout');
@@ -152,22 +160,28 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
 
   const handleGeneratePlan = async () => {
     setIsGeneratingPlan(true);
-    
+
     try {
       // Mock equipment and goals - in real app, these would come from user data
       const equipment = ['Dumbbells', 'Bench', 'Barbell'];
       const goals = ['Muscle Gain', 'Strength'];
       const duration = 45;
-      
-      await generateWorkoutPlan(equipment, goals, duration);
-      
-      Alert.alert(
-        'Plan Generated!',
-        'Your AI-powered workout plan is ready!',
-        [{ text: 'View Plan', onPress: () => {} }]
-      );
+
+      await generateWorkoutPlan({
+        goals,
+        availableEquipment: equipment,
+        duration,
+        difficulty: 'intermediate',
+      });
+
+      Alert.alert('Plan Generated!', 'Your AI-powered workout plan is ready!', [
+        { text: 'View Plan', onPress: () => {} },
+      ]);
     } catch (error) {
-      Alert.alert('Error', 'Failed to generate workout plan. Please try again.');
+      Alert.alert(
+        'Error',
+        'Failed to generate workout plan. Please try again.',
+      );
     } finally {
       setIsGeneratingPlan(false);
     }
@@ -178,8 +192,9 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
   };
 
   const getWorkoutDuration = () => {
-    const totalRestTime = mockExercises.reduce((acc, exercise) => 
-      acc + (exercise.restTime * (exercise.sets - 1)), 0
+    const totalRestTime = mockExercises.reduce(
+      (acc, exercise) => acc + exercise.restTime * (exercise.sets - 1),
+      0,
     );
     const estimatedDuration = Math.ceil((totalRestTime + 1800) / 60); // Add 30 min for exercises
     return estimatedDuration;
@@ -187,7 +202,10 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
@@ -234,7 +252,7 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
             {!workoutStarted ? (
               <View style={styles.workoutButtons}>
                 <SmartFitButton
-                  title={activePlan ? "Start Workout" : "Generate AI Plan"}
+                  title={activePlan ? 'Start Workout' : 'Generate AI Plan'}
                   onPress={handleStartWorkout}
                   loading={isGeneratingPlan}
                   size="large"
@@ -243,7 +261,9 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
                 {!activePlan && (
                   <SmartFitButton
                     title="Use Sample Plan"
-                    onPress={() => Alert.alert('Sample Plan', 'Using sample workout plan')}
+                    onPress={() =>
+                      Alert.alert('Sample Plan', 'Using sample workout plan')
+                    }
                     variant="outline"
                     style={styles.sampleButton}
                   />
@@ -253,7 +273,9 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
               <View style={styles.activeWorkoutButtons}>
                 <SmartFitButton
                   title="Continue Workout"
-                  onPress={() => Alert.alert('Workout', 'Continue your workout')}
+                  onPress={() =>
+                    Alert.alert('Workout', 'Continue your workout')
+                  }
                   size="large"
                   style={styles.continueButton}
                 />
@@ -288,17 +310,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[4],
-    paddingBottom: theme.spacing[8],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.xxl,
   },
   header: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   title: {
     ...theme.typography.h1,
     color: theme.colors.text,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
@@ -309,8 +331,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.large,
-    paddingVertical: theme.spacing[6],
-    marginBottom: theme.spacing[6],
+    paddingVertical: theme.spacing.xl,
+    marginBottom: theme.spacing.xl,
   },
   statItem: {
     alignItems: 'center',
@@ -318,32 +340,32 @@ const styles = StyleSheet.create({
   statValue: {
     ...theme.typography.h1,
     color: theme.colors.accent,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   statLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
   },
   exercisesSection: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   sectionTitle: {
     ...theme.typography.h2,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   exerciseCard: {
     // Additional styles if needed
   },
   buttonSection: {
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   startButton: {
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   activeWorkoutButtons: {
-    gap: theme.spacing[3],
-    marginBottom: theme.spacing[2],
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
   },
   continueButton: {
     // Additional styles if needed
@@ -355,8 +377,8 @@ const styles = StyleSheet.create({
     // Additional styles if needed
   },
   workoutButtons: {
-    gap: theme.spacing[3],
-    marginBottom: theme.spacing[2],
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
   },
   sampleButton: {
     // Additional styles if needed

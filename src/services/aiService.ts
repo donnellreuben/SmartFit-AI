@@ -65,7 +65,7 @@ class AIService {
   async analyzeEquipment(_images: string[]): Promise<EquipmentAnalysisResult> {
     try {
       // Simulate API call to AI service
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise<void>(resolve => setTimeout(resolve, 2000));
 
       // Mock equipment detection results
       const mockDetections: EquipmentDetection[] = [
@@ -92,7 +92,11 @@ class AIService {
         },
       ];
 
-      const totalConfidence = mockDetections.reduce((sum, detection) => sum + detection.confidence, 0) / mockDetections.length;
+      const totalConfidence =
+        mockDetections.reduce(
+          (sum, detection) => sum + detection.confidence,
+          0,
+        ) / mockDetections.length;
 
       return {
         detectedEquipment: mockDetections,
@@ -113,10 +117,12 @@ class AIService {
   /**
    * Generate personalized workout plan based on equipment and goals
    */
-  async generateWorkoutPlan(request: WorkoutPlanRequest): Promise<GeneratedWorkoutPlan> {
+  async generateWorkoutPlan(
+    request: WorkoutPlanRequest,
+  ): Promise<GeneratedWorkoutPlan> {
     try {
       // Simulate API call to AI service
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise<void>(resolve => setTimeout(resolve, 3000));
 
       // Mock workout plan generation
       const mockExercises: WorkoutExercise[] = [
@@ -134,14 +140,18 @@ class AIService {
             'Lie on the bench with dumbbells in each hand',
             'Press the dumbbells up until arms are extended',
             'Lower with control to chest level',
-            'Repeat for desired reps'
+            'Repeat for desired reps',
           ],
           tips: [
             'Keep your core tight throughout the movement',
-            'Don\'t bounce the weights off your chest',
-            'Focus on controlled movement'
+            "Don't bounce the weights off your chest",
+            'Focus on controlled movement',
           ],
-          alternatives: ['Barbell Bench Press', 'Push-ups', 'Incline Dumbbell Press'],
+          alternatives: [
+            'Barbell Bench Press',
+            'Push-ups',
+            'Incline Dumbbell Press',
+          ],
         },
         {
           id: 'squats-1',
@@ -157,14 +167,18 @@ class AIService {
             'Hold a dumbbell at chest level',
             'Stand with feet shoulder-width apart',
             'Lower your body as if sitting back into a chair',
-            'Return to starting position'
+            'Return to starting position',
           ],
           tips: [
             'Keep your chest up and core tight',
-            'Don\'t let your knees cave inward',
-            'Go as low as comfortable'
+            "Don't let your knees cave inward",
+            'Go as low as comfortable',
           ],
-          alternatives: ['Bodyweight Squats', 'Barbell Squats', 'Bulgarian Split Squats'],
+          alternatives: [
+            'Bodyweight Squats',
+            'Barbell Squats',
+            'Bulgarian Split Squats',
+          ],
         },
         {
           id: 'rows-1',
@@ -180,12 +194,12 @@ class AIService {
             'Hold dumbbells with arms extended',
             'Bend forward at the hips',
             'Pull dumbbells to your sides',
-            'Lower with control'
+            'Lower with control',
           ],
           tips: [
             'Keep your back straight',
             'Engage your lats to initiate the movement',
-            'Don\'t use momentum'
+            "Don't use momentum",
           ],
           alternatives: ['Barbell Rows', 'Cable Rows', 'Inverted Rows'],
         },
@@ -212,26 +226,29 @@ class AIService {
   /**
    * Analyze exercise form from video
    */
-  async analyzeExerciseForm(_videoUri: string, _exerciseType: string): Promise<{
+  async analyzeExerciseForm(
+    _videoUri: string,
+    _exerciseType: string,
+  ): Promise<{
     score: number;
     feedback: string[];
     improvements: string[];
   }> {
     try {
       // Simulate form analysis
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise<void>(resolve => setTimeout(resolve, 1500));
 
       return {
         score: 85,
         feedback: [
           'Good overall form and range of motion',
           'Maintain consistent tempo throughout the movement',
-          'Keep your core engaged'
+          'Keep your core engaged',
         ],
         improvements: [
           'Try to go deeper on the squat',
           'Focus on controlled descent',
-          'Keep your chest up throughout the movement'
+          'Keep your chest up throughout the movement',
         ],
       };
     } catch (error) {
@@ -246,11 +263,11 @@ class AIService {
   async getExerciseRecommendations(
     _currentExercises: string[],
     _availableEquipment: string[],
-    _goals: string[]
+    _goals: string[],
   ): Promise<WorkoutExercise[]> {
     try {
       // Simulate recommendation engine
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise<void>(resolve => setTimeout(resolve, 1000));
 
       // Mock recommendations
       return [
@@ -268,19 +285,25 @@ class AIService {
             'Hold dumbbells at your sides',
             'Hinge at the hips while keeping back straight',
             'Lower weights along your legs',
-            'Return to starting position'
+            'Return to starting position',
           ],
           tips: [
             'Keep your core tight',
-            'Don\'t round your back',
-            'Feel the stretch in your hamstrings'
+            "Don't round your back",
+            'Feel the stretch in your hamstrings',
           ],
-          alternatives: ['Conventional Deadlifts', 'Good Mornings', 'Hip Thrusts'],
+          alternatives: [
+            'Conventional Deadlifts',
+            'Good Mornings',
+            'Hip Thrusts',
+          ],
         },
       ];
     } catch (error) {
       console.error('Exercise recommendations failed:', error);
-      throw new Error('Failed to get exercise recommendations. Please try again.');
+      throw new Error(
+        'Failed to get exercise recommendations. Please try again.',
+      );
     }
   }
 
@@ -290,7 +313,7 @@ class AIService {
   async getNutritionalRecommendations(
     _goals: string[],
     _currentWeight: number,
-    _targetWeight?: number
+    _targetWeight?: number,
   ): Promise<{
     dailyCalories: number;
     macronutrients: {
@@ -302,14 +325,14 @@ class AIService {
   }> {
     try {
       // Simulate nutritional analysis
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise<void>(resolve => setTimeout(resolve, 1000));
 
       return {
         dailyCalories: 2200,
         macronutrients: {
           protein: 165, // grams
-          carbs: 275,   // grams
-          fat: 73,      // grams
+          carbs: 275, // grams
+          fat: 73, // grams
         },
         recommendations: [
           'Eat 1g of protein per pound of body weight',
@@ -320,7 +343,9 @@ class AIService {
       };
     } catch (error) {
       console.error('Nutritional recommendations failed:', error);
-      throw new Error('Failed to get nutritional recommendations. Please try again.');
+      throw new Error(
+        'Failed to get nutritional recommendations. Please try again.',
+      );
     }
   }
 }

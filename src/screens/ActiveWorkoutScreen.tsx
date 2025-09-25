@@ -17,29 +17,35 @@ import { VideoPlayer } from '../components/VideoPlayer';
 import { useWorkoutStore } from '../store/workoutStore';
 import { theme } from '../constants/theme';
 
-type ActiveWorkoutScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ActiveWorkout'>;
+type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'ActiveWorkout'
+>;
 
 interface ActiveWorkoutScreenProps {
   navigation: ActiveWorkoutScreenNavigationProp;
 }
 
-const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation }) => {
-  const { currentWorkout, completeSet, completeExercise, endWorkout } = useWorkoutStore();
+const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({
+  navigation,
+}) => {
+  const { currentWorkout, completeSet, completeExercise, endWorkout } =
+    useWorkoutStore();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
   const [isResting, setIsResting] = useState(false);
   const [restTimeRemaining, setRestTimeRemaining] = useState(0);
   const [workoutStartTime, setWorkoutStartTime] = useState(Date.now());
   const [showVideo, setShowVideo] = useState(false);
-  
-  const restTimerRef = useRef<NodeJS.Timeout>();
+
+  const restTimerRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     if (!currentWorkout) {
       navigation.goBack();
       return;
     }
-    
+
     setWorkoutStartTime(Date.now());
   }, [currentWorkout, navigation]);
 
@@ -71,7 +77,8 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
   const currentExercise = currentWorkout.exercises[currentExerciseIndex];
   const currentSet = currentExercise?.sets[currentSetIndex];
   const isLastSet = currentSetIndex >= (currentExercise?.sets.length || 0) - 1;
-  const isLastExercise = currentExerciseIndex >= currentWorkout.exercises.length - 1;
+  const isLastExercise =
+    currentExerciseIndex >= currentWorkout.exercises.length - 1;
 
   const handleSetComplete = () => {
     if (!currentExercise || !currentSet) return;
@@ -87,7 +94,7 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
     if (isLastSet) {
       // Complete the exercise
       completeExercise(currentExercise.exerciseId);
-      
+
       if (isLastExercise) {
         // Workout complete
         handleWorkoutComplete();
@@ -113,14 +120,17 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
   const handleWorkoutComplete = () => {
     const duration = Math.floor((Date.now() - workoutStartTime) / 60000);
     endWorkout();
-    
+
     Alert.alert(
       'Workout Complete! 🎉',
       `Great job! You completed your workout in ${duration} minutes.`,
       [
-        { text: 'View Summary', onPress: () => navigation.navigate('WorkoutSummary') },
-        { text: 'Done', onPress: () => navigation.navigate('WorkoutPlan') }
-      ]
+        {
+          text: 'View Summary',
+          onPress: () => navigation.navigate('WorkoutSummary'),
+        },
+        { text: 'Done', onPress: () => navigation.navigate('WorkoutPlan') },
+      ],
     );
   };
 
@@ -130,14 +140,14 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
   };
 
   const handlePauseWorkout = () => {
-    Alert.alert(
-      'Pause Workout',
-      'What would you like to do?',
-      [
-        { text: 'Resume', style: 'cancel' },
-        { text: 'End Workout', onPress: handleWorkoutComplete, style: 'destructive' }
-      ]
-    );
+    Alert.alert('Pause Workout', 'What would you like to do?', [
+      { text: 'Resume', style: 'cancel' },
+      {
+        text: 'End Workout',
+        onPress: handleWorkoutComplete,
+        style: 'destructive',
+      },
+    ]);
   };
 
   const formatTime = (seconds: number) => {
@@ -147,33 +157,48 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
   };
 
   const getWorkoutProgress = () => {
-    const totalSets = currentWorkout.exercises.reduce((acc, ex) => acc + ex.sets.length, 0);
-    const completedSets = currentWorkout.exercises.reduce((acc, ex) => 
-      acc + ex.sets.filter(set => set.completed).length, 0
+    const totalSets = currentWorkout.exercises.reduce(
+      (acc, ex) => acc + ex.sets.length,
+      0,
+    );
+    const completedSets = currentWorkout.exercises.reduce(
+      (acc, ex) => acc + ex.sets.filter(set => set.completed).length,
+      0,
     );
     return (completedSets / totalSets) * 100;
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={handlePauseWorkout} style={styles.pauseButton}>
+            <TouchableOpacity
+              onPress={handlePauseWorkout}
+              style={styles.pauseButton}
+            >
               <Text style={styles.pauseButtonText}>⏸</Text>
             </TouchableOpacity>
             <Text style={styles.workoutTitle}>Active Workout</Text>
             <View style={styles.progressContainer}>
-              <Text style={styles.progressText}>{Math.round(getWorkoutProgress())}%</Text>
+              <Text style={styles.progressText}>
+                {Math.round(getWorkoutProgress())}%
+              </Text>
             </View>
           </View>
 
           {/* Progress Bar */}
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBar}>
-              <View 
-                style={[styles.progressFill, { width: `${getWorkoutProgress()}%` }]}
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: `${getWorkoutProgress()}%` },
+                ]}
               />
             </View>
           </View>
@@ -195,7 +220,9 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
                   </View>
                   <View style={styles.setInfoRow}>
                     <Text style={styles.setLabel}>Weight:</Text>
-                    <Text style={styles.setValue}>{currentSet?.weight || 0} kg</Text>
+                    <Text style={styles.setValue}>
+                      {currentSet?.weight || 0} kg
+                    </Text>
                   </View>
                 </View>
 
@@ -212,7 +239,9 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
                 style={styles.videoButton}
                 onPress={() => setShowVideo(true)}
               >
-                <Text style={styles.videoButtonText}>📹 Watch Exercise Video</Text>
+                <Text style={styles.videoButtonText}>
+                  📹 Watch Exercise Video
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -221,9 +250,13 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
           {isResting && (
             <SmartFitCard style={styles.restCard}>
               <Text style={styles.restTitle}>Rest Time</Text>
-              <Text style={styles.restTime}>{formatTime(restTimeRemaining)}</Text>
-              <Text style={styles.restSubtext}>Next: {currentExercise?.name}</Text>
-              
+              <Text style={styles.restTime}>
+                {formatTime(restTimeRemaining)}
+              </Text>
+              <Text style={styles.restSubtext}>
+                Next: {currentExercise?.name}
+              </Text>
+
               <View style={styles.restButtons}>
                 <SmartFitButton
                   title="Skip Rest"
@@ -243,7 +276,11 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
                 {currentWorkout.exercises[currentExerciseIndex + 1]?.name}
               </Text>
               <Text style={styles.nextExerciseSets}>
-                {currentWorkout.exercises[currentExerciseIndex + 1]?.sets.length} sets
+                {
+                  currentWorkout.exercises[currentExerciseIndex + 1]?.sets
+                    .length
+                }{' '}
+                sets
               </Text>
             </SmartFitCard>
           )}
@@ -258,8 +295,10 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>
-                {currentWorkout.exercises.reduce((acc, ex) => 
-                  acc + ex.sets.filter(set => set.completed).length, 0
+                {currentWorkout.exercises.reduce(
+                  (acc, ex) =>
+                    acc + ex.sets.filter(set => set.completed).length,
+                  0,
                 )}
               </Text>
               <Text style={styles.statLabel}>Sets Done</Text>
@@ -279,7 +318,9 @@ const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({ navigation })
         <View style={styles.videoModal}>
           <View style={styles.videoContainer}>
             <VideoPlayer
-              videoUrl={currentExercise.videoUrl || 'https://example.com/video.mp4'}
+              videoUrl={
+                currentExercise.videoUrl || 'https://example.com/video.mp4'
+              }
               title={currentExercise.name}
               onClose={() => setShowVideo(false)}
               autoPlay={true}
@@ -301,15 +342,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[4],
-    paddingBottom: theme.spacing[8],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.xxl,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   pauseButton: {
     width: 40,
@@ -329,8 +370,8 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     backgroundColor: theme.colors.accent,
-    paddingHorizontal: theme.spacing[3],
-    paddingVertical: theme.spacing[1],
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.xs,
     borderRadius: theme.borderRadius.small,
   },
   progressText: {
@@ -339,7 +380,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   progressBarContainer: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   progressBar: {
     height: 8,
@@ -353,27 +394,27 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   exerciseSection: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   exerciseName: {
     ...theme.typography.h1,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   setInfo: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   setCard: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   setDetails: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   setInfoRow: {
     alignItems: 'center',
@@ -381,19 +422,19 @@ const styles = StyleSheet.create({
   setLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   setValue: {
     ...theme.typography.h3,
     color: theme.colors.text,
   },
   completeButton: {
-    marginTop: theme.spacing[2],
+    marginTop: theme.spacing.sm,
   },
   videoButton: {
     backgroundColor: theme.colors.surface,
-    paddingVertical: theme.spacing[3],
-    paddingHorizontal: theme.spacing[4],
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
     borderRadius: theme.borderRadius.medium,
     alignItems: 'center',
   },
@@ -404,40 +445,40 @@ const styles = StyleSheet.create({
   },
   restCard: {
     backgroundColor: theme.colors.accent,
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
     alignItems: 'center',
   },
   restTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   restTime: {
     ...theme.typography.h1,
     color: theme.colors.text,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   restSubtext: {
     ...theme.typography.body,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   restButtons: {
     flexDirection: 'row',
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   nextExerciseCard: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   nextExerciseTitle: {
     ...theme.typography.h3,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   nextExerciseName: {
     ...theme.typography.h2,
     color: theme.colors.text,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   nextExerciseSets: {
     ...theme.typography.body,
@@ -448,7 +489,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.large,
-    paddingVertical: theme.spacing[4],
+    paddingVertical: theme.spacing.lg,
   },
   statItem: {
     alignItems: 'center',
@@ -456,7 +497,7 @@ const styles = StyleSheet.create({
   statValue: {
     ...theme.typography.h2,
     color: theme.colors.accent,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   statLabel: {
     ...theme.typography.caption,
@@ -473,7 +514,7 @@ const styles = StyleSheet.create({
   },
   videoContainer: {
     flex: 1,
-    margin: theme.spacing[4],
+    margin: theme.spacing.lg,
   },
 });
 

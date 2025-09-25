@@ -196,7 +196,7 @@ class SubscriptionService {
 
   getCurrentPlan(): SubscriptionPlan | null {
     if (!this.subscriptionStatus.planId) return null;
-    return this.getPlanById(this.subscriptionStatus.planId);
+    return this.getPlanById(this.subscriptionStatus.planId) || null;
   }
 
   // MARK: - Subscription Status

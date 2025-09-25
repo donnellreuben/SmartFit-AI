@@ -1,16 +1,14 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
 import { theme } from '../constants/theme';
 
-type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
+type WelcomeScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Welcome'
+>;
 
 interface WelcomeScreenProps {
   navigation: WelcomeScreenNavigationProp;
@@ -33,11 +31,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
 
         {/* App Title */}
         <Text style={styles.title}>SmartFit AI</Text>
-        <Text style={styles.subtitle}>
-          Your AI-powered personal trainer
-        </Text>
+        <Text style={styles.subtitle}>Your AI-powered personal trainer</Text>
         <Text style={styles.description}>
-          Get personalized workout plans based on your equipment and fitness goals
+          Get personalized workout plans based on your equipment and fitness
+          goals
         </Text>
 
         {/* Get Started Button */}
@@ -63,10 +60,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[6],
+    paddingHorizontal: theme.spacing.xl,
   },
   logoContainer: {
-    marginBottom: theme.spacing[8],
+    marginBottom: theme.spacing.xxl,
   },
   logo: {
     width: 120,
@@ -86,21 +83,21 @@ const styles = StyleSheet.create({
     ...theme.typography.h1,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.h3,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   description: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
-    marginBottom: theme.spacing[8],
-    paddingHorizontal: theme.spacing[4],
+    marginBottom: theme.spacing.xxl,
+    paddingHorizontal: theme.spacing.lg,
   },
   buttonContainer: {
     width: '100%',

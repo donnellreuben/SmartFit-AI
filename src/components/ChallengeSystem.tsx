@@ -39,7 +39,9 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
   onViewLeaderboard,
   style,
 }) => {
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [selectedFilter, setSelectedFilter] = useState<
+    'all' | 'active' | 'completed'
+  >('all');
 
   // Mock challenges data
   const challenges: Challenge[] = [
@@ -122,10 +124,14 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return theme.colors.success;
-      case 'medium': return theme.colors.warning;
-      case 'hard': return theme.colors.error;
-      default: return theme.colors.textSecondary;
+      case 'easy':
+        return theme.colors.success;
+      case 'medium':
+        return theme.colors.warning;
+      case 'hard':
+        return theme.colors.error;
+      default:
+        return theme.colors.textSecondary;
     }
   };
 
@@ -140,14 +146,23 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
         `Are you ready to start "${challenge.title}"?`,
         [
           { text: 'Cancel', style: 'cancel' },
-          { text: 'Join', onPress: () => {
-            if (onJoinChallenge) onJoinChallenge(challenge.id);
-            Alert.alert('Joined!', `You've joined the ${challenge.title} challenge. Good luck!`);
-          }}
-        ]
+          {
+            text: 'Join',
+            onPress: () => {
+              if (onJoinChallenge) onJoinChallenge(challenge.id);
+              Alert.alert(
+                'Joined!',
+                `You've joined the ${challenge.title} challenge. Good luck!`,
+              );
+            },
+          },
+        ],
       );
     } else {
-      Alert.alert('Challenge Not Available', 'This challenge is not currently active.');
+      Alert.alert(
+        'Challenge Not Available',
+        'This challenge is not currently active.',
+      );
     }
   };
 
@@ -164,19 +179,27 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
       <View style={styles.challengeHeader}>
         <View style={styles.challengeInfo}>
           <Text style={styles.challengeTitle}>{challenge.title}</Text>
-          <Text style={styles.challengeDescription}>{challenge.description}</Text>
+          <Text style={styles.challengeDescription}>
+            {challenge.description}
+          </Text>
         </View>
-        <View style={[
-          styles.difficultyBadge,
-          { backgroundColor: getDifficultyColor(challenge.difficulty) }
-        ]}>
-          <Text style={styles.difficultyText}>{challenge.difficulty.toUpperCase()}</Text>
+        <View
+          style={[
+            styles.difficultyBadge,
+            { backgroundColor: getDifficultyColor(challenge.difficulty) },
+          ]}
+        >
+          <Text style={styles.difficultyText}>
+            {challenge.difficulty.toUpperCase()}
+          </Text>
         </View>
       </View>
 
       <View style={styles.challengeStats}>
         <View style={styles.statItem}>
-          <Text style={styles.statValue}>{challenge.current}/{challenge.target}</Text>
+          <Text style={styles.statValue}>
+            {challenge.current}/{challenge.target}
+          </Text>
           <Text style={styles.statLabel}>Progress</Text>
         </View>
         <View style={styles.statItem}>
@@ -196,14 +219,22 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
             style={[
               styles.progressFill,
               {
-                width: `${getProgressPercentage(challenge.current, challenge.target)}%`,
-                backgroundColor: challenge.isCompleted ? theme.colors.success : theme.colors.accent
-              }
+                width: `${getProgressPercentage(
+                  challenge.current,
+                  challenge.target,
+                )}%`,
+                backgroundColor: challenge.isCompleted
+                  ? theme.colors.success
+                  : theme.colors.accent,
+              },
             ]}
           />
         </View>
         <Text style={styles.progressText}>
-          {Math.round(getProgressPercentage(challenge.current, challenge.target))}% Complete
+          {Math.round(
+            getProgressPercentage(challenge.current, challenge.target),
+          )}
+          % Complete
         </Text>
       </View>
 
@@ -223,13 +254,14 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
             style={styles.joinButton}
           />
         )}
-        
+
         {challenge.isCompleted && (
           <SmartFitButton
             title="Completed ✓"
             variant="outline"
             size="small"
             style={styles.completedButton}
+            onPress={() => {}}
             disabled
           />
         )}
@@ -257,19 +289,21 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
 
       {/* Filter Buttons */}
       <View style={styles.filterContainer}>
-        {(['all', 'active', 'completed'] as const).map((filter) => (
+        {(['all', 'active', 'completed'] as const).map(filter => (
           <TouchableOpacity
             key={filter}
             style={[
               styles.filterButton,
-              selectedFilter === filter && styles.filterButtonActive
+              selectedFilter === filter && styles.filterButtonActive,
             ]}
             onPress={() => setSelectedFilter(filter)}
           >
-            <Text style={[
-              styles.filterButtonText,
-              selectedFilter === filter && styles.filterButtonTextActive
-            ]}>
+            <Text
+              style={[
+                styles.filterButtonText,
+                selectedFilter === filter && styles.filterButtonTextActive,
+              ]}
+            >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </Text>
           </TouchableOpacity>
@@ -277,7 +311,10 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
       </View>
 
       {/* Challenges List */}
-      <ScrollView style={styles.challengesList} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.challengesList}
+        showsVerticalScrollIndicator={false}
+      >
         {filteredChallenges.map(renderChallengeCard)}
       </ScrollView>
 
@@ -285,13 +322,17 @@ export const ChallengeSystem: React.FC<ChallengeSystemProps> = ({
       <View style={styles.quickActions}>
         <SmartFitButton
           title="Create Custom Challenge"
-          onPress={() => Alert.alert('Custom Challenge', 'Feature coming soon!')}
+          onPress={() =>
+            Alert.alert('Custom Challenge', 'Feature coming soon!')
+          }
           variant="outline"
           style={styles.customButton}
         />
         <SmartFitButton
           title="View All Achievements"
-          onPress={() => Alert.alert('Achievements', 'View your earned badges and rewards!')}
+          onPress={() =>
+            Alert.alert('Achievements', 'View your earned badges and rewards!')
+          }
           variant="secondary"
           style={styles.achievementsButton}
         />
@@ -306,14 +347,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   header: {
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[4],
-    paddingBottom: theme.spacing[4],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.lg,
   },
   title: {
     ...theme.typography.h1,
     color: theme.colors.text,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
@@ -322,14 +363,14 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: 'row',
-    paddingHorizontal: theme.spacing[6],
-    marginBottom: theme.spacing[4],
-    gap: theme.spacing[2],
+    paddingHorizontal: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
+    gap: theme.spacing.sm,
   },
   filterButton: {
     flex: 1,
-    paddingVertical: theme.spacing[2],
-    paddingHorizontal: theme.spacing[3],
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.medium,
     backgroundColor: theme.colors.surface,
     alignItems: 'center',
@@ -347,25 +388,25 @@ const styles = StyleSheet.create({
   },
   challengesList: {
     flex: 1,
-    paddingHorizontal: theme.spacing[6],
+    paddingHorizontal: theme.spacing.xl,
   },
   challengeCard: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   challengeHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   challengeInfo: {
     flex: 1,
-    marginRight: theme.spacing[3],
+    marginRight: theme.spacing.md,
   },
   challengeTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   challengeDescription: {
     ...theme.typography.body,
@@ -373,8 +414,8 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   difficultyBadge: {
-    paddingHorizontal: theme.spacing[2],
-    paddingVertical: theme.spacing[1],
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
     borderRadius: theme.borderRadius.small,
   },
   difficultyText: {
@@ -386,7 +427,7 @@ const styles = StyleSheet.create({
   challengeStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   statItem: {
     alignItems: 'center',
@@ -394,21 +435,21 @@ const styles = StyleSheet.create({
   statValue: {
     ...theme.typography.h3,
     color: theme.colors.accent,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   statLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
   },
   progressContainer: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   progressBar: {
     height: 8,
     backgroundColor: theme.colors.primary,
     borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   progressFill: {
     height: '100%',
@@ -422,12 +463,12 @@ const styles = StyleSheet.create({
   rewardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   rewardLabel: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
-    marginRight: theme.spacing[2],
+    marginRight: theme.spacing.sm,
   },
   rewardText: {
     ...theme.typography.body,
@@ -436,7 +477,7 @@ const styles = StyleSheet.create({
   },
   challengeActions: {
     flexDirection: 'row',
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   joinButton: {
     flex: 1,
@@ -448,12 +489,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   quickActions: {
-    paddingHorizontal: theme.spacing[6],
-    paddingBottom: theme.spacing[6],
-    gap: theme.spacing[3],
+    paddingHorizontal: theme.spacing.xl,
+    paddingBottom: theme.spacing.xl,
+    gap: theme.spacing.md,
   },
   customButton: {
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   achievementsButton: {
     // Additional styles if needed

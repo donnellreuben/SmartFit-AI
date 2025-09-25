@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInputProps,
   ViewStyle,
+  TextStyle,
   TouchableOpacity,
 } from 'react-native';
 import { theme } from '../constants/theme';
@@ -42,7 +43,7 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
 
   const getContainerStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
-      marginBottom: theme.spacing[3],
+      marginBottom: theme.spacing.md,
     };
 
     return {
@@ -62,18 +63,18 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
 
     const sizeStyles: Record<string, ViewStyle> = {
       small: {
-        paddingHorizontal: theme.spacing[3],
-        paddingVertical: theme.spacing[2],
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.sm,
         minHeight: 36,
       },
       medium: {
-        paddingHorizontal: theme.spacing[4],
-        paddingVertical: theme.spacing[3],
+        paddingHorizontal: theme.spacing.lg,
+        paddingVertical: theme.spacing.md,
         minHeight: 48,
       },
       large: {
-        paddingHorizontal: theme.spacing[5],
-        paddingVertical: theme.spacing[4],
+        paddingHorizontal: theme.spacing.xl,
+        paddingVertical: theme.spacing.lg,
         minHeight: 56,
       },
     };
@@ -103,14 +104,13 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
     };
   };
 
-  const getInputStyle = (): ViewStyle => {
-    const baseStyle: ViewStyle = {
-      flex: 1,
+  const getInputStyle = (): TextStyle => {
+    const baseStyle: TextStyle = {
       color: theme.colors.text,
       fontSize: 16,
     };
 
-    const sizeStyles: Record<string, ViewStyle> = {
+    const sizeStyles: Record<string, TextStyle> = {
       small: {
         fontSize: 14,
       },
@@ -129,21 +129,21 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
     };
   };
 
-  const getLabelStyle = (): ViewStyle => {
+  const getLabelStyle = (): TextStyle => {
     return {
       color: theme.colors.text,
       fontSize: 16,
       fontWeight: '500',
-      marginBottom: theme.spacing[1],
+      marginBottom: theme.spacing.xs,
       ...labelStyle,
     };
   };
 
-  const getErrorStyle = (): ViewStyle => {
+  const getErrorStyle = (): TextStyle => {
     return {
       color: theme.colors.error,
       fontSize: 14,
-      marginTop: theme.spacing[1],
+      marginTop: theme.spacing.xs,
       ...errorStyle,
     };
   };
@@ -152,9 +152,7 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
     <View style={getContainerStyle()}>
       {label && <Text style={getLabelStyle()}>{label}</Text>}
       <View style={getInputContainerStyle()}>
-        {leftIcon && (
-          <View style={styles.leftIconContainer}>{leftIcon}</View>
-        )}
+        {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
         <TextInput
           style={getInputStyle()}
           placeholderTextColor={theme.colors.placeholder}
@@ -179,9 +177,9 @@ export const SmartFitInput: React.FC<SmartFitInputProps> = ({
 
 const styles = StyleSheet.create({
   leftIconContainer: {
-    marginRight: theme.spacing[2],
+    marginRight: theme.spacing.sm,
   },
   rightIconContainer: {
-    marginLeft: theme.spacing[2],
+    marginLeft: theme.spacing.sm,
   },
 });

@@ -42,7 +42,7 @@ class AccessibilityService {
       highContrast: false,
       reducedMotion: false,
     };
-    
+
     this.initializeAccessibility();
   }
 
@@ -72,7 +72,8 @@ class AccessibilityService {
 
   private async checkMotionPreferences() {
     try {
-      const isReduceMotionEnabled = await AccessibilityInfo.isReduceMotionEnabled();
+      const isReduceMotionEnabled =
+        await AccessibilityInfo.isReduceMotionEnabled();
       this.settings.isReduceMotionEnabled = isReduceMotionEnabled;
       this.settings.reducedMotion = isReduceMotionEnabled;
     } catch (error) {
@@ -81,7 +82,11 @@ class AccessibilityService {
   }
 
   // MARK: - Screen Reader Support
-  announce(message: string, priority: 'low' | 'medium' | 'high' = 'medium', delay: number = 0) {
+  announce(
+    message: string,
+    priority: 'low' | 'medium' | 'high' = 'medium',
+    delay: number = 0,
+  ) {
     if (!this.settings.isScreenReaderEnabled) return;
 
     const announcement: AccessibilityAnnouncement = {
@@ -111,57 +116,67 @@ class AccessibilityService {
   announceWorkoutStart(workoutName: string) {
     this.announce(
       `Starting workout: ${workoutName}. Tap to begin your first exercise.`,
-      'high'
+      'high',
     );
   }
 
-  announceExerciseChange(exerciseName: string, setNumber: number, totalSets: number) {
+  announceExerciseChange(
+    exerciseName: string,
+    setNumber: number,
+    totalSets: number,
+  ) {
     this.announce(
       `Exercise: ${exerciseName}. Set ${setNumber} of ${totalSets}.`,
-      'high'
+      'high',
     );
   }
 
   announceSetComplete(setNumber: number, totalSets: number) {
-    this.announce(
-      `Set ${setNumber} of ${totalSets} complete.`,
-      'medium'
-    );
+    this.announce(`Set ${setNumber} of ${totalSets} complete.`, 'medium');
   }
 
   announceRestStart(duration: number) {
     const minutes = Math.floor(duration / 60);
     const seconds = duration % 60;
-    const timeString = minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''} and ${seconds} seconds` : `${seconds} seconds`;
-    
+    const timeString =
+      minutes > 0
+        ? `${minutes} minute${minutes > 1 ? 's' : ''} and ${seconds} seconds`
+        : `${seconds} seconds`;
+
     this.announce(
       `Rest time: ${timeString}. Tap to skip rest or extend time.`,
-      'medium'
+      'medium',
     );
   }
 
   announceRestComplete() {
-    this.announce(
-      'Rest time complete. Ready for next set.',
-      'high'
-    );
+    this.announce('Rest time complete. Ready for next set.', 'high');
+  }
+
+  // MARK: - Screen Reader Detection
+  isScreenReaderEnabled(): boolean {
+    return this.settings.isScreenReaderEnabled;
+  }
+
+  // MARK: - Focus Management
+  setFocus(elementRef: any) {
+    if (elementRef && elementRef.current) {
+      elementRef.current.focus();
+    }
   }
 
   announceWorkoutComplete(totalDuration: number) {
     const minutes = Math.floor(totalDuration / 60);
     const seconds = totalDuration % 60;
-    
+
     this.announce(
       `Workout complete! Total time: ${minutes} minutes and ${seconds} seconds. Great job!`,
-      'high'
+      'high',
     );
   }
 
   announceProgressUpdate(metric: string, value: string) {
-    this.announce(
-      `${metric}: ${value}`,
-      'low'
-    );
+    this.announce(`${metric}: ${value}`, 'low');
   }
 
   // MARK: - Accessibility Labels and Hints
@@ -170,7 +185,11 @@ class AccessibilityService {
     return `${name}. ${sets} sets of ${reps} reps. ${restTime} seconds rest between sets.`;
   }
 
-  getSetButtonAccessibilityLabel(currentSet: number, totalSets: number, isComplete: boolean): string {
+  getSetButtonAccessibilityLabel(
+    currentSet: number,
+    totalSets: number,
+    isComplete: boolean,
+  ): string {
     if (isComplete) {
       return `Set ${currentSet} of ${totalSets} completed. Tap to start next set.`;
     }
@@ -180,8 +199,11 @@ class AccessibilityService {
   getRestTimerAccessibilityLabel(timeRemaining: number): string {
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
-    const timeString = minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''} and ${seconds} seconds` : `${seconds} seconds`;
-    
+    const timeString =
+      minutes > 0
+        ? `${minutes} minute${minutes > 1 ? 's' : ''} and ${seconds} seconds`
+        : `${seconds} seconds`;
+
     return `Rest time remaining: ${timeString}. Tap to skip or extend rest.`;
   }
 
@@ -215,7 +237,7 @@ class AccessibilityService {
         error: '#FF0000',
       };
     }
-    
+
     return {
       primary: '#1A1A1A',
       secondary: '#666666',
@@ -239,11 +261,13 @@ class AccessibilityService {
       large: 1.2,
       'extra-large': 1.4,
     };
-    
+
     return baseSize * scaleFactors[this.settings.fontSize];
   }
 
-  getAccessibilityFontSize(fontSize: 'small' | 'medium' | 'large' | 'extra-large') {
+  getAccessibilityFontSize(
+    fontSize: 'small' | 'medium' | 'large' | 'extra-large',
+  ) {
     this.settings.fontSize = fontSize;
   }
 
@@ -304,7 +328,9 @@ class AccessibilityService {
 
   getExerciseInstructions(exercise: any): string {
     const { name, instructions } = exercise;
-    return `${name}. Instructions: ${instructions.join('. ')}. Tap to complete set.`;
+    return `${name}. Instructions: ${instructions.join(
+      '. ',
+    )}. Tap to complete set.`;
   }
 
   getRestInstructions(): string {
@@ -312,12 +338,19 @@ class AccessibilityService {
   }
 
   // MARK: - Progress Tracking Accessibility
-  getProgressAccessibilityLabel(metric: string, current: number, previous: number): string {
+  getProgressAccessibilityLabel(
+    metric: string,
+    current: number,
+    previous: number,
+  ): string {
     const change = current - previous;
-    const changeText = change > 0 ? `increased by ${change}` : 
-                      change < 0 ? `decreased by ${Math.abs(change)}` : 
-                      'unchanged';
-    
+    const changeText =
+      change > 0
+        ? `increased by ${change}`
+        : change < 0
+        ? `decreased by ${Math.abs(change)}`
+        : 'unchanged';
+
     return `${metric}: ${current}. ${changeText} from previous measurement.`;
   }
 
@@ -331,8 +364,13 @@ class AccessibilityService {
   }
 
   // MARK: - Navigation Accessibility
-  getNavigationAccessibilityLabel(screenName: string, isActive: boolean): string {
-    return `${screenName} screen. ${isActive ? 'Currently active' : 'Tap to navigate'}.`;
+  getNavigationAccessibilityLabel(
+    screenName: string,
+    isActive: boolean,
+  ): string {
+    return `${screenName} screen. ${
+      isActive ? 'Currently active' : 'Tap to navigate'
+    }.`;
   }
 
   getTabAccessibilityLabel(tabName: string, isSelected: boolean): string {

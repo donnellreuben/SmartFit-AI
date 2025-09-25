@@ -11,7 +11,7 @@ import { RNCamera } from 'react-native-camera';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { theme } from '../constants/theme';
 
-  // const { width, height } = Dimensions.get('window');
+// const { width, height } = Dimensions.get('window');
 
 export interface CameraComponentProps {
   onImageCaptured: (imageUri: string) => void;
@@ -55,7 +55,7 @@ export const CameraComponent: React.FC<CameraComponentProps> = ({
     if (!cameraRef.current || isCapturing) return;
 
     setIsCapturing(true);
-    
+
     try {
       const options = {
         quality: 0.8,
@@ -66,7 +66,7 @@ export const CameraComponent: React.FC<CameraComponentProps> = ({
       };
 
       const data = await cameraRef.current.takePictureAsync(options);
-      
+
       if (data.uri) {
         onImageCaptured(data.uri);
       }
@@ -81,16 +81,20 @@ export const CameraComponent: React.FC<CameraComponentProps> = ({
   const toggleFlash = () => {
     setFlashMode(prev => {
       switch (prev) {
-        case 'off': return 'on';
-        case 'on': return 'auto';
-        case 'auto': return 'off';
-        default: return 'off';
+        case 'off':
+          return 'on';
+        case 'on':
+          return 'auto';
+        case 'auto':
+          return 'off';
+        default:
+          return 'off';
       }
     });
   };
 
   const toggleCamera = () => {
-    setCameraType(prev => prev === 'back' ? 'front' : 'back');
+    setCameraType(prev => (prev === 'back' ? 'front' : 'back'));
   };
 
   if (hasPermission === null) {
@@ -107,9 +111,13 @@ export const CameraComponent: React.FC<CameraComponentProps> = ({
       <View style={styles.permissionContainer}>
         <Text style={styles.permissionTitle}>Camera Permission Required</Text>
         <Text style={styles.permissionText}>
-          SmartFit AI needs camera access to analyze your equipment and create personalized workout plans.
+          SmartFit AI needs camera access to analyze your equipment and create
+          personalized workout plans.
         </Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={checkCameraPermission}>
+        <TouchableOpacity
+          style={styles.permissionButton}
+          onPress={checkCameraPermission}
+        >
           <Text style={styles.permissionButtonText}>Grant Permission</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
@@ -163,12 +171,18 @@ export const CameraComponent: React.FC<CameraComponentProps> = ({
 
           {/* Bottom Controls */}
           <View style={styles.bottomControls}>
-            <TouchableOpacity style={styles.switchButton} onPress={toggleCamera}>
+            <TouchableOpacity
+              style={styles.switchButton}
+              onPress={toggleCamera}
+            >
               <Text style={styles.switchButtonText}>🔄</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity
-              style={[styles.captureButton, isCapturing && styles.captureButtonDisabled]}
+              style={[
+                styles.captureButton,
+                isCapturing && styles.captureButtonDisabled,
+              ]}
               onPress={takePicture}
               disabled={isCapturing || currentImageCount >= maxImages}
             >
@@ -178,7 +192,7 @@ export const CameraComponent: React.FC<CameraComponentProps> = ({
                 <View style={styles.captureButtonInner} />
               )}
             </TouchableOpacity>
-            
+
             <View style={styles.placeholder} />
           </View>
         </View>
@@ -203,9 +217,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[4],
-    paddingTop: theme.spacing[6],
-    paddingBottom: theme.spacing[4],
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.xl,
+    paddingBottom: theme.spacing.lg,
   },
   closeButton: {
     width: 40,
@@ -222,8 +236,8 @@ const styles = StyleSheet.create({
   },
   imageCounter: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: theme.spacing[3],
-    paddingVertical: theme.spacing[1],
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.xs,
     borderRadius: theme.borderRadius.small,
   },
   counterText: {
@@ -247,7 +261,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[6],
+    paddingHorizontal: theme.spacing.xl,
   },
   focusFrame: {
     width: 250,
@@ -261,19 +275,19 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     fontSize: 16,
     fontWeight: '500',
-    marginTop: theme.spacing[4],
+    marginTop: theme.spacing.lg,
     textAlign: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: theme.spacing[3],
-    paddingVertical: theme.spacing[2],
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
     borderRadius: theme.borderRadius.medium,
   },
   bottomControls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[6],
-    paddingBottom: theme.spacing[8],
+    paddingHorizontal: theme.spacing.xl,
+    paddingBottom: theme.spacing.xxl,
   },
   switchButton: {
     width: 50,
@@ -314,13 +328,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[6],
+    paddingHorizontal: theme.spacing.xl,
     backgroundColor: theme.colors.background,
   },
   permissionTitle: {
     ...theme.typography.h2,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
     textAlign: 'center',
   },
   permissionText: {
@@ -328,14 +342,14 @@ const styles = StyleSheet.create({
     color: theme.colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   permissionButton: {
     backgroundColor: theme.colors.accent,
-    paddingHorizontal: theme.spacing[6],
-    paddingVertical: theme.spacing[3],
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.md,
     borderRadius: theme.borderRadius.medium,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   permissionButtonText: {
     ...theme.typography.body,

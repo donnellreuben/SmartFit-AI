@@ -13,18 +13,29 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
 import { SmartFitCard } from '../components/SmartFitCard';
-import { subscriptionService, SubscriptionPlan, SubscriptionStatus } from '../services/subscriptionService';
+import {
+  subscriptionService,
+  SubscriptionPlan,
+  SubscriptionStatus,
+} from '../services/subscriptionService';
 import { theme } from '../constants/theme';
 
-type SubscriptionScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Subscription'>;
+type SubscriptionScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Subscription'
+>;
 
 interface SubscriptionScreenProps {
   navigation: SubscriptionScreenNavigationProp;
 }
 
-const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _navigation }) => {
+const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
+  navigation: _navigation,
+}) => {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
-  const [currentStatus, setCurrentStatus] = useState<SubscriptionStatus | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<SubscriptionStatus | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -38,7 +49,7 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
       setIsLoading(true);
       const availablePlans = subscriptionService.getAvailablePlans();
       const status = subscriptionService.getSubscriptionStatus();
-      
+
       setPlans(availablePlans);
       setCurrentStatus(status);
     } catch (error) {
@@ -56,7 +67,7 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
   const handlePurchase = async (planId: string) => {
     try {
       setIsPurchasing(true);
-      
+
       const plan = subscriptionService.getPlanById(planId);
       if (!plan) {
         Alert.alert('Error', 'Plan not found');
@@ -76,7 +87,7 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
         if (trialResult.success) {
           Alert.alert(
             'Trial Started',
-            `Your ${plan.trialDays}-day free trial has begun!`
+            `Your ${plan.trialDays}-day free trial has begun!`,
           );
           await loadSubscriptionData();
         } else {
@@ -86,7 +97,9 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
       }
 
       // Purchase subscription
-      const purchaseResult = await subscriptionService.purchaseSubscription(planId);
+      const purchaseResult = await subscriptionService.purchaseSubscription(
+        planId,
+      );
       if (purchaseResult.success) {
         Alert.alert('Success', 'Subscription activated successfully!');
         await loadSubscriptionData();
@@ -105,7 +118,7 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
     try {
       setIsLoading(true);
       const result = await subscriptionService.restorePurchases();
-      
+
       if (result.success) {
         Alert.alert('Success', 'Purchases restored successfully!');
         await loadSubscriptionData();
@@ -144,7 +157,7 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -156,11 +169,11 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
     return (
       <SmartFitCard
         key={plan.id}
-        style={[
+        style={StyleSheet.flatten([
           styles.planCard,
-          isSelected && styles.selectedPlan,
-          isPopular && styles.popularPlan,
-        ]}
+          isSelected ? styles.selectedPlan : null,
+          isPopular ? styles.popularPlan : null,
+        ])}
         onPress={() => handlePlanSelect(plan.id)}
       >
         {isPopular && (
@@ -168,7 +181,7 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
             <Text style={styles.popularText}>MOST POPULAR</Text>
           </View>
         )}
-        
+
         {isCurrentPlan && (
           <View style={styles.currentBadge}>
             <Text style={styles.currentText}>CURRENT PLAN</Text>
@@ -252,16 +265,20 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
     return (
       <SmartFitCard style={styles.statusCard}>
         <Text style={styles.statusTitle}>Current Status</Text>
-        <Text style={styles.statusText}>{currentPlan?.name || 'Unknown Plan'}</Text>
-        
+        <Text style={styles.statusText}>
+          {currentPlan?.name || 'Unknown Plan'}
+        </Text>
+
         {isTrial && (
           <Text style={styles.trialStatusText}>
             Trial ends in {daysRemaining} days
           </Text>
         )}
-        
+
         <Text style={styles.statusSubtext}>
-          {currentStatus.autoRenew ? 'Auto-renewal enabled' : 'Auto-renewal disabled'}
+          {currentStatus.autoRenew
+            ? 'Auto-renewal enabled'
+            : 'Auto-renewal disabled'}
         </Text>
       </SmartFitCard>
     );
@@ -272,7 +289,9 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.accent} />
-          <Text style={styles.loadingText}>Loading subscription information...</Text>
+          <Text style={styles.loadingText}>
+            Loading subscription information...
+          </Text>
         </View>
       </SafeAreaView>
     );
@@ -280,19 +299,21 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>Choose Your Plan</Text>
           <Text style={styles.subtitle}>
-            Unlock premium features and take your fitness journey to the next level
+            Unlock premium features and take your fitness journey to the next
+            level
           </Text>
         </View>
 
         {renderCurrentStatus()}
 
-        <View style={styles.plansContainer}>
-          {plans.map(renderPlanCard)}
-        </View>
+        <View style={styles.plansContainer}>{plans.map(renderPlanCard)}</View>
 
         <View style={styles.actionsContainer}>
           <TouchableOpacity
@@ -305,7 +326,8 @@ const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({ navigation: _na
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period.
+            Subscriptions automatically renew unless cancelled at least 24 hours
+            before the end of the current period.
           </Text>
         </View>
       </ScrollView>
@@ -393,7 +415,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.accent,
     paddingVertical: theme.spacing.xs,
     paddingHorizontal: theme.spacing.sm,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.borderRadius.small,
     alignItems: 'center',
     zIndex: 1,
   },
@@ -410,7 +432,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.success,
     paddingVertical: theme.spacing.xs,
     paddingHorizontal: theme.spacing.sm,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.borderRadius.small,
     alignItems: 'center',
     zIndex: 1,
   },
@@ -469,7 +491,7 @@ const styles = StyleSheet.create({
   trialContainer: {
     backgroundColor: theme.colors.accent + '20',
     padding: theme.spacing.sm,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.borderRadius.small,
     marginBottom: theme.spacing.md,
     alignItems: 'center',
   },
@@ -494,7 +516,7 @@ const styles = StyleSheet.create({
   cancelButton: {
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.borderRadius.small,
     borderWidth: 1,
     borderColor: theme.colors.error,
   },

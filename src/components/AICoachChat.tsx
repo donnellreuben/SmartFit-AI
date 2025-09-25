@@ -25,10 +25,7 @@ export interface AICoachChatProps {
   style?: any;
 }
 
-export const AICoachChat: React.FC<AICoachChatProps> = ({
-  onClose,
-  style,
-}) => {
+export const AICoachChat: React.FC<AICoachChatProps> = ({ onClose, style }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -36,7 +33,7 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
       isUser: false,
       timestamp: new Date(),
       type: 'text',
-    }
+    },
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -83,14 +80,16 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
     }, 1500);
   };
 
-  const generateAIResponse = (userInput: string): { text: string; type: ChatMessage['type'] } => {
+  const generateAIResponse = (
+    userInput: string,
+  ): { text: string; type: ChatMessage['type'] } => {
     const input = userInput.toLowerCase();
 
     // Workout questions
     if (input.includes('workout') || input.includes('exercise')) {
       return {
-        text: "Great question! Here are some effective workout tips:\n\n• Focus on compound movements like squats, deadlifts, and bench press\n• Progressive overload is key - gradually increase weight or reps\n• Rest 48-72 hours between muscle groups\n• Form is more important than weight\n\nWhat specific exercises are you working on?",
-        type: 'workout_tip'
+        text: 'Great question! Here are some effective workout tips:\n\n• Focus on compound movements like squats, deadlifts, and bench press\n• Progressive overload is key - gradually increase weight or reps\n• Rest 48-72 hours between muscle groups\n• Form is more important than weight\n\nWhat specific exercises are you working on?',
+        type: 'workout_tip',
       };
     }
 
@@ -98,30 +97,38 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
     if (input.includes('form') || input.includes('technique')) {
       return {
         text: "Proper form is crucial for safety and results! Here's what to focus on:\n\n• Keep your core tight throughout movements\n• Control the weight - don't use momentum\n• Full range of motion is important\n• Breathe properly - exhale on exertion\n\nWould you like specific form tips for any exercise?",
-        type: 'form_correction'
+        type: 'form_correction',
       };
     }
 
     // Motivation
-    if (input.includes('motivation') || input.includes('motivated') || input.includes('tired')) {
+    if (
+      input.includes('motivation') ||
+      input.includes('motivated') ||
+      input.includes('tired')
+    ) {
       return {
         text: "You've got this! 💪 Remember:\n\n• Every workout counts, even the tough ones\n• Progress isn't always linear - trust the process\n• You're stronger than you think\n• Consistency beats perfection\n\nWhat's your main fitness goal right now?",
-        type: 'motivation'
+        type: 'motivation',
       };
     }
 
     // Nutrition
-    if (input.includes('nutrition') || input.includes('diet') || input.includes('food')) {
+    if (
+      input.includes('nutrition') ||
+      input.includes('diet') ||
+      input.includes('food')
+    ) {
       return {
-        text: "Nutrition is 70% of your fitness success! Here are some key points:\n\n• Eat 1g protein per pound of body weight\n• Stay hydrated - aim for 3-4 liters daily\n• Eat whole foods 80% of the time\n• Time your meals around workouts\n\nNeed specific nutrition advice for your goals?",
-        type: 'text'
+        text: 'Nutrition is 70% of your fitness success! Here are some key points:\n\n• Eat 1g protein per pound of body weight\n• Stay hydrated - aim for 3-4 liters daily\n• Eat whole foods 80% of the time\n• Time your meals around workouts\n\nNeed specific nutrition advice for your goals?',
+        type: 'text',
       };
     }
 
     // Default response
     return {
       text: "I'm here to help with your fitness journey! I can assist with:\n\n• Workout planning and exercise selection\n• Form and technique tips\n• Motivation and goal setting\n• Nutrition guidance\n• Recovery and rest advice\n\nWhat would you like to know more about?",
-      type: 'text'
+      type: 'text',
     };
   };
 
@@ -141,15 +148,19 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
   const getMessageIcon = (message: ChatMessage) => {
     if (message.isUser) return '👤';
     switch (message.type) {
-      case 'workout_tip': return '💪';
-      case 'motivation': return '🔥';
-      case 'form_correction': return '📝';
-      default: return '🤖';
+      case 'workout_tip':
+        return '💪';
+      case 'motivation':
+        return '🔥';
+      case 'form_correction':
+        return '📝';
+      default:
+        return '🤖';
     }
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={[styles.container, style]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
@@ -157,7 +168,9 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>AI Coach</Text>
-          <Text style={styles.headerSubtitle}>Your personal fitness assistant</Text>
+          <Text style={styles.headerSubtitle}>
+            Your personal fitness assistant
+          </Text>
         </View>
         {onClose && (
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -172,31 +185,35 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
         style={styles.messagesContainer}
         showsVerticalScrollIndicator={false}
       >
-        {messages.map((message) => (
+        {messages.map(message => (
           <View
             key={message.id}
             style={[
               styles.messageContainer,
-              message.isUser ? styles.userMessageContainer : styles.aiMessageContainer
+              message.isUser
+                ? styles.userMessageContainer
+                : styles.aiMessageContainer,
             ]}
           >
             <View style={styles.messageHeader}>
-              <Text style={styles.messageIcon}>
-                {getMessageIcon(message)}
-              </Text>
+              <Text style={styles.messageIcon}>{getMessageIcon(message)}</Text>
               <Text style={styles.messageTime}>
-                {message.timestamp.toLocaleTimeString([], { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
+                {message.timestamp.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
                 })}
               </Text>
             </View>
-            
+
             <SmartFitCard style={getMessageStyle(message)}>
-              <Text style={[
-                styles.messageText,
-                message.isUser ? styles.userMessageText : styles.aiMessageText
-              ]}>
+              <Text
+                style={[
+                  styles.messageText,
+                  message.isUser
+                    ? styles.userMessageText
+                    : styles.aiMessageText,
+                ]}
+              >
                 {message.text}
               </Text>
             </SmartFitCard>
@@ -229,7 +246,7 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
         <TouchableOpacity
           style={[
             styles.sendButton,
-            !inputText.trim() && styles.sendButtonDisabled
+            !inputText.trim() && styles.sendButtonDisabled,
           ]}
           onPress={handleSendMessage}
           disabled={!inputText.trim() || isTyping}
@@ -250,8 +267,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[4],
-    paddingVertical: theme.spacing[3],
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
   },
@@ -281,10 +298,10 @@ const styles = StyleSheet.create({
   },
   messagesContainer: {
     flex: 1,
-    paddingHorizontal: theme.spacing[4],
+    paddingHorizontal: theme.spacing.lg,
   },
   messageContainer: {
-    marginVertical: theme.spacing[2],
+    marginVertical: theme.spacing.sm,
   },
   userMessageContainer: {
     alignItems: 'flex-end',
@@ -295,11 +312,11 @@ const styles = StyleSheet.create({
   messageHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   messageIcon: {
     fontSize: 16,
-    marginRight: theme.spacing[2],
+    marginRight: theme.spacing.sm,
   },
   messageTime: {
     ...theme.typography.caption,
@@ -338,16 +355,16 @@ const styles = StyleSheet.create({
   typingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: theme.spacing[2],
+    marginVertical: theme.spacing.sm,
   },
   typingText: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
-    marginRight: theme.spacing[2],
+    marginRight: theme.spacing.sm,
   },
   typingDots: {
     flexDirection: 'row',
-    gap: theme.spacing[1],
+    gap: theme.spacing.xs,
   },
   dot: {
     width: 6,
@@ -356,37 +373,37 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.accent,
   },
   dot1: {
-    animationDelay: '0s',
+    // Animation delay handled in component logic
   },
   dot2: {
-    animationDelay: '0.2s',
+    // Animation delay handled in component logic
   },
   dot3: {
-    animationDelay: '0.4s',
+    // Animation delay handled in component logic
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    paddingHorizontal: theme.spacing[4],
-    paddingVertical: theme.spacing[3],
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   textInput: {
     flex: 1,
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.medium,
-    paddingHorizontal: theme.spacing[3],
-    paddingVertical: theme.spacing[2],
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
     color: theme.colors.text,
     fontSize: 16,
     maxHeight: 100,
   },
   sendButton: {
     backgroundColor: theme.colors.accent,
-    paddingHorizontal: theme.spacing[4],
-    paddingVertical: theme.spacing[2],
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
     borderRadius: theme.borderRadius.medium,
   },
   sendButtonDisabled: {

@@ -1,14 +1,9 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { theme } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
-const CHART_WIDTH = width - (theme.spacing[6] * 2);
+const CHART_WIDTH = width - theme.spacing.xl * 2;
 const CHART_HEIGHT = 200;
 
 export interface ChartDataPoint {
@@ -24,6 +19,7 @@ export interface ProgressChartProps {
   xAxisLabel?: string;
   color?: string;
   showTrend?: boolean;
+  trend?: number;
   style?: any;
 }
 
@@ -85,15 +81,16 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
 
   const getPointPosition = (point: ChartDataPoint, index: number) => {
     const x = (index / (data.length - 1)) * CHART_WIDTH;
-    const y = CHART_HEIGHT - ((point.value - minValue) / valueRange) * CHART_HEIGHT;
+    const y =
+      CHART_HEIGHT - ((point.value - minValue) / valueRange) * CHART_HEIGHT;
     return { x, y };
   };
 
   // const generatePath = () => {
   //   if (data.length < 2) return '';
-  //   
+  //
   //   let path = `M 0 ${CHART_HEIGHT}`;
-  //   
+  //
   //   data.forEach((point, index) => {
   //     const { x, y } = getPointPosition(point, index);
   //     if (index === 0) {
@@ -102,20 +99,20 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
   //       path += ` L ${x} ${y}`;
   //     }
   //   });
-  //   
+  //
   //   return path;
   // };
 
   // const generateAreaPath = () => {
   //   if (data.length < 2) return '';
-  //   
+  //
   //   let path = `M 0 ${CHART_HEIGHT}`;
-  //   
+  //
   //   data.forEach((point, index) => {
   //     const { x, y } = getPointPosition(point, index);
   //     path += ` L ${x} ${y}`;
   //   });
-  //   
+  //
   //   path += ` L ${CHART_WIDTH} ${CHART_HEIGHT} Z`;
   //   return path;
   // };
@@ -126,10 +123,14 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
         <Text style={styles.title}>{title}</Text>
         {showTrend && (
           <View style={styles.trendContainer}>
-            <Text style={[
-              styles.trendText,
-              { color: trend >= 0 ? theme.colors.success : theme.colors.error }
-            ]}>
+            <Text
+              style={[
+                styles.trendText,
+                {
+                  color: trend >= 0 ? theme.colors.success : theme.colors.error,
+                },
+              ]}
+            >
               {trend >= 0 ? '↗' : '↘'} {Math.abs(trend).toFixed(1)}%
             </Text>
           </View>
@@ -140,7 +141,9 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
         {/* Y-Axis Labels */}
         <View style={styles.yAxisContainer}>
           <Text style={styles.yAxisLabel}>{formatValue(maxValue)}</Text>
-          <Text style={styles.yAxisLabel}>{formatValue((maxValue + minValue) / 2)}</Text>
+          <Text style={styles.yAxisLabel}>
+            {formatValue((maxValue + minValue) / 2)}
+          </Text>
           <Text style={styles.yAxisLabel}>{formatValue(minValue)}</Text>
         </View>
 
@@ -151,10 +154,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
             {[0, 0.25, 0.5, 0.75, 1].map((ratio, index) => (
               <View
                 key={index}
-                style={[
-                  styles.gridLine,
-                  { top: ratio * CHART_HEIGHT }
-                ]}
+                style={[styles.gridLine, { top: ratio * CHART_HEIGHT }]}
               />
             ))}
           </View>
@@ -173,10 +173,10 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
                         left: x - 4,
                         top: y - 4,
                         backgroundColor: color,
-                      }
+                      },
                     ]}
                   />
-                  
+
                   {/* Value Label */}
                   <Text
                     style={[
@@ -184,7 +184,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
                       {
                         left: x - 20,
                         top: y - 30,
-                      }
+                      },
                     ]}
                   >
                     {formatValue(point.value)}
@@ -201,13 +201,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
         {data.map((point, index) => {
           const x = (index / (data.length - 1)) * CHART_WIDTH;
           return (
-            <Text
-              key={index}
-              style={[
-                styles.xAxisLabel,
-                { left: x - 20 }
-              ]}
-            >
+            <Text key={index} style={[styles.xAxisLabel, { left: x - 20 }]}>
               {formatDate(point.date)}
             </Text>
           );
@@ -215,11 +209,11 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
       </View>
 
       {/* Axis Labels */}
-      {yAxisLabel && (
-        <Text style={styles.axisLabel}>{yAxisLabel}</Text>
-      )}
+      {yAxisLabel && <Text style={styles.axisLabel}>{yAxisLabel}</Text>}
       {xAxisLabel && (
-        <Text style={[styles.axisLabel, styles.xAxisLabelText]}>{xAxisLabel}</Text>
+        <Text style={[styles.axisLabel, styles.xAxisLabelText]}>
+          {xAxisLabel}
+        </Text>
       )}
     </View>
   );
@@ -229,14 +223,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.large,
-    padding: theme.spacing[4],
-    marginBottom: theme.spacing[4],
+    padding: theme.spacing.lg,
+    marginBottom: theme.spacing.lg,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   title: {
     ...theme.typography.h3,
@@ -244,8 +238,8 @@ const styles = StyleSheet.create({
   },
   trendContainer: {
     backgroundColor: theme.colors.primary,
-    paddingHorizontal: theme.spacing[2],
-    paddingVertical: theme.spacing[1],
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
     borderRadius: theme.borderRadius.small,
   },
   trendText: {
@@ -255,12 +249,12 @@ const styles = StyleSheet.create({
   chartContainer: {
     flexDirection: 'row',
     height: CHART_HEIGHT,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   yAxisContainer: {
     width: 40,
     justifyContent: 'space-between',
-    paddingVertical: theme.spacing[1],
+    paddingVertical: theme.spacing.xs,
   },
   yAxisLabel: {
     ...theme.typography.caption,
@@ -305,7 +299,7 @@ const styles = StyleSheet.create({
     ...theme.typography.caption,
     color: theme.colors.text,
     backgroundColor: theme.colors.primary,
-    paddingHorizontal: theme.spacing[1],
+    paddingHorizontal: theme.spacing.xs,
     paddingVertical: 2,
     borderRadius: theme.borderRadius.small,
     minWidth: 40,
@@ -327,7 +321,7 @@ const styles = StyleSheet.create({
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginTop: theme.spacing[2],
+    marginTop: theme.spacing.sm,
   },
   xAxisLabelText: {
     textAlign: 'left',

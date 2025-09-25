@@ -25,19 +25,24 @@ export interface SocialShareProps {
   workoutData: WorkoutShareData;
   onClose?: () => void;
   style?: any;
+  customMessage?: string;
 }
 
 export const SocialShare: React.FC<SocialShareProps> = ({
   workoutData,
   onClose,
   style,
+  customMessage,
 }) => {
-  const [_selectedPlatform, _setSelectedPlatform] = useState<string | null>(null);
+  const [_selectedPlatform, _setSelectedPlatform] = useState<string | null>(
+    null,
+  );
   const [includePhoto, setIncludePhoto] = useState(false);
   const [_customMessage, _setCustomMessage] = useState('');
 
   const generateShareText = () => {
-    const baseText = `🏋️ Just completed "${workoutData.workoutName}"!\n\n` +
+    const baseText =
+      `🏋️ Just completed "${workoutData.workoutName}"!\n\n` +
       `⏱️ Duration: ${workoutData.duration} minutes\n` +
       `💪 Exercises: ${workoutData.exercises}\n` +
       `🔢 Sets: ${workoutData.sets}\n` +
@@ -50,7 +55,7 @@ export const SocialShare: React.FC<SocialShareProps> = ({
   const handleShare = async (platform: string) => {
     try {
       const shareText = generateShareText();
-      
+
       if (platform === 'native') {
         await Share.share({
           message: shareText,
@@ -63,11 +68,17 @@ export const SocialShare: React.FC<SocialShareProps> = ({
           'This would open the ' + platform + ' app to share your workout.',
           [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'Share', onPress: () => {
-              Alert.alert('Shared!', `Workout shared to ${platform} successfully.`);
-              if (onClose) onClose();
-            }}
-          ]
+            {
+              text: 'Share',
+              onPress: () => {
+                Alert.alert(
+                  'Shared!',
+                  `Workout shared to ${platform} successfully.`,
+                );
+                if (onClose) onClose();
+              },
+            },
+          ],
         );
       }
     } catch (error) {
@@ -76,14 +87,10 @@ export const SocialShare: React.FC<SocialShareProps> = ({
   };
 
   const handleQuickShare = () => {
-    Alert.alert(
-      'Quick Share',
-      'Share your workout achievement with friends!',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Share', onPress: () => handleShare('native') }
-      ]
-    );
+    Alert.alert('Quick Share', 'Share your workout achievement with friends!', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Share', onPress: () => handleShare('native') },
+    ]);
   };
 
   const platforms = [
@@ -91,7 +98,12 @@ export const SocialShare: React.FC<SocialShareProps> = ({
     { id: 'twitter', name: 'Twitter', icon: '🐦', color: '#1DA1F2' },
     { id: 'facebook', name: 'Facebook', icon: '📘', color: '#1877F2' },
     { id: 'whatsapp', name: 'WhatsApp', icon: '💬', color: '#25D366' },
-    { id: 'native', name: 'More Options', icon: '📤', color: theme.colors.accent },
+    {
+      id: 'native',
+      name: 'More Options',
+      icon: '📤',
+      color: theme.colors.accent,
+    },
   ];
 
   return (
@@ -134,7 +146,9 @@ export const SocialShare: React.FC<SocialShareProps> = ({
         </Text>
         <SmartFitButton
           title="Customize Message"
-          onPress={() => Alert.alert('Custom Message', 'Message customization coming soon!')}
+          onPress={() =>
+            Alert.alert('Custom Message', 'Message customization coming soon!')
+          }
           variant="outline"
           size="small"
         />
@@ -147,7 +161,7 @@ export const SocialShare: React.FC<SocialShareProps> = ({
           <TouchableOpacity
             style={[
               styles.photoOption,
-              !includePhoto && styles.photoOptionSelected
+              !includePhoto && styles.photoOptionSelected,
             ]}
             onPress={() => setIncludePhoto(false)}
           >
@@ -156,7 +170,7 @@ export const SocialShare: React.FC<SocialShareProps> = ({
           <TouchableOpacity
             style={[
               styles.photoOption,
-              includePhoto && styles.photoOptionSelected
+              includePhoto && styles.photoOptionSelected,
             ]}
             onPress={() => setIncludePhoto(true)}
           >
@@ -169,12 +183,12 @@ export const SocialShare: React.FC<SocialShareProps> = ({
       <View style={styles.platformsSection}>
         <Text style={styles.platformsTitle}>Share to:</Text>
         <View style={styles.platformsGrid}>
-          {platforms.map((platform) => (
+          {platforms.map(platform => (
             <TouchableOpacity
               key={platform.id}
               style={[
                 styles.platformButton,
-                { backgroundColor: platform.color }
+                { backgroundColor: platform.color },
               ]}
               onPress={() => handleShare(platform.id)}
             >
@@ -195,7 +209,8 @@ export const SocialShare: React.FC<SocialShareProps> = ({
 
       {/* Privacy Notice */}
       <Text style={styles.privacyNotice}>
-        🔒 Your personal data is never shared. Only workout stats and your message are shared.
+        🔒 Your personal data is never shared. Only workout stats and your
+        message are shared.
       </Text>
     </View>
   );
@@ -205,18 +220,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    paddingHorizontal: theme.spacing[6],
-    paddingVertical: theme.spacing[4],
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.lg,
   },
   header: {
     alignItems: 'center',
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   title: {
     ...theme.typography.h2,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
@@ -225,12 +240,12 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   summaryCard: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   summaryTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
     textAlign: 'center',
   },
   summaryStats: {
@@ -243,43 +258,43 @@ const styles = StyleSheet.create({
   statValue: {
     ...theme.typography.h2,
     color: theme.colors.accent,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   statLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
   },
   messageCard: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   messageTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   messagePlaceholder: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     fontStyle: 'italic',
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
     textAlign: 'center',
   },
   photoCard: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   photoTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   photoOptions: {
     flexDirection: 'row',
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   photoOption: {
     flex: 1,
-    paddingVertical: theme.spacing[2],
-    paddingHorizontal: theme.spacing[3],
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     borderColor: theme.colors.border,
@@ -295,30 +310,30 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   platformsSection: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   platformsTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   platformsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   platformButton: {
     flex: 1,
     minWidth: '45%',
-    paddingVertical: theme.spacing[3],
-    paddingHorizontal: theme.spacing[2],
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.sm,
     borderRadius: theme.borderRadius.medium,
     alignItems: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   platformIcon: {
     fontSize: 24,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   platformName: {
     ...theme.typography.caption,
@@ -326,7 +341,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   quickShareButton: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   privacyNotice: {
     ...theme.typography.caption,

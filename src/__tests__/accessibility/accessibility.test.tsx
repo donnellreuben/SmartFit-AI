@@ -106,7 +106,7 @@ describe('Accessibility Tests', () => {
       description: 'Basic push-up exercise',
       duration: 30,
       sets: 3,
-      reps: 10,
+      reps: '10',
       difficulty: 'Beginner' as const,
       equipment: ['None'],
       instructions: [
@@ -117,6 +117,8 @@ describe('Accessibility Tests', () => {
       videoUrl: 'https://example.com/video.mp4',
       alternatives: [],
       muscleGroups: ['Chest', 'Shoulders', 'Triceps'],
+      restTime: 60,
+      tips: ['Keep your core tight', 'Maintain proper form'],
     };
 
     it('should have proper accessibility labels for exercise details', () => {
@@ -189,9 +191,11 @@ describe('Accessibility Tests', () => {
   describe('SocialShare Accessibility', () => {
     it('should have proper accessibility labels for share options', () => {
       const mockWorkoutData = {
+        workoutName: 'Morning Workout',
         duration: 30,
         calories: 150,
         exercises: 5,
+        sets: 15,
         date: '2024-01-01',
       };
 
@@ -281,16 +285,16 @@ describe('Accessibility Tests', () => {
           exercise={{
             id: '1',
             name: 'Push-ups',
-            description: 'Basic push-up exercise',
-            duration: 30,
             sets: 3,
-            reps: 10,
+            reps: '10',
             difficulty: 'Beginner' as const,
             equipment: ['None'],
             instructions: ['Start in plank position'],
             videoUrl: 'https://example.com/video.mp4',
             alternatives: [],
             muscleGroups: ['Chest', 'Shoulders', 'Triceps'],
+            restTime: 60,
+            tips: ['Keep your core tight', 'Maintain proper form'],
           }}
           onPress={() => {}}
         />,

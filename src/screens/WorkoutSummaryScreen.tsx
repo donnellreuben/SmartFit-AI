@@ -15,13 +15,18 @@ import { SmartFitCard } from '../components/SmartFitCard';
 import { useWorkoutStore } from '../store/workoutStore';
 import { theme } from '../constants/theme';
 
-type WorkoutSummaryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'WorkoutSummary'>;
+type WorkoutSummaryScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'WorkoutSummary'
+>;
 
 interface WorkoutSummaryScreenProps {
   navigation: WorkoutSummaryScreenNavigationProp;
 }
 
-const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation }) => {
+const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({
+  navigation,
+}) => {
   const { workoutHistory } = useWorkoutStore();
   const [workout, _setWorkout] = useState(workoutHistory[0]); // Most recent workout
   const [showNotes, setShowNotes] = useState(false);
@@ -49,31 +54,39 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
   };
 
   const handleShareWorkout = () => {
-    Alert.alert(
-      'Share Workout',
-      'Share your workout progress with friends!',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Share', onPress: () => Alert.alert('Shared!', 'Workout shared successfully.') }
-      ]
-    );
+    Alert.alert('Share Workout', 'Share your workout progress with friends!', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Share',
+        onPress: () => Alert.alert('Shared!', 'Workout shared successfully.'),
+      },
+    ]);
   };
 
   const getTotalSets = () => {
-    return workout.exercises.reduce((acc, exercise) => acc + exercise.sets.length, 0);
+    return workout.exercises.reduce(
+      (acc, exercise) => acc + exercise.sets.length,
+      0,
+    );
   };
 
   const getCompletedSets = () => {
-    return workout.exercises.reduce((acc, exercise) => 
-      acc + exercise.sets.filter(set => set.completed).length, 0
+    return workout.exercises.reduce(
+      (acc, exercise) =>
+        acc + exercise.sets.filter(set => set.completed).length,
+      0,
     );
   };
 
   const getTotalWeight = () => {
-    return workout.exercises.reduce((acc, exercise) => 
-      acc + exercise.sets.reduce((setAcc, set) => 
-        setAcc + (set.weight || 0) * (set.reps || 0), 0
-      ), 0
+    return workout.exercises.reduce(
+      (acc, exercise) =>
+        acc +
+        exercise.sets.reduce(
+          (setAcc, set) => setAcc + (set.weight || 0) * (set.reps || 0),
+          0,
+        ),
+      0,
     );
   };
 
@@ -89,13 +102,16 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
@@ -112,17 +128,17 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
               <Text style={styles.statValue}>{workout.duration}</Text>
               <Text style={styles.statLabel}>Minutes</Text>
             </SmartFitCard>
-            
+
             <SmartFitCard style={styles.statCard}>
               <Text style={styles.statValue}>{getCompletedSets()}</Text>
               <Text style={styles.statLabel}>Sets</Text>
             </SmartFitCard>
-            
+
             <SmartFitCard style={styles.statCard}>
               <Text style={styles.statValue}>{workout.exercises.length}</Text>
               <Text style={styles.statLabel}>Exercises</Text>
             </SmartFitCard>
-            
+
             <SmartFitCard style={styles.statCard}>
               <Text style={styles.statValue}>{getCompletionRate()}%</Text>
               <Text style={styles.statLabel}>Complete</Text>
@@ -132,23 +148,27 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
           {/* Performance Highlights */}
           <SmartFitCard style={styles.highlightsCard}>
             <Text style={styles.cardTitle}>Performance Highlights</Text>
-            
+
             <View style={styles.highlightItem}>
               <Text style={styles.highlightIcon}>💪</Text>
               <View style={styles.highlightContent}>
                 <Text style={styles.highlightTitle}>Total Weight Lifted</Text>
-                <Text style={styles.highlightValue}>{getTotalWeight().toFixed(0)} kg</Text>
+                <Text style={styles.highlightValue}>
+                  {getTotalWeight().toFixed(0)} kg
+                </Text>
               </View>
             </View>
-            
+
             <View style={styles.highlightItem}>
               <Text style={styles.highlightIcon}>🔥</Text>
               <View style={styles.highlightContent}>
                 <Text style={styles.highlightTitle}>Estimated Calories</Text>
-                <Text style={styles.highlightValue}>{workout.totalCalories}</Text>
+                <Text style={styles.highlightValue}>
+                  {workout.totalCalories}
+                </Text>
               </View>
             </View>
-            
+
             <View style={styles.highlightItem}>
               <Text style={styles.highlightIcon}>⚡</Text>
               <View style={styles.highlightContent}>
@@ -161,7 +181,7 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
           {/* Exercise Breakdown */}
           <SmartFitCard style={styles.exercisesCard}>
             <Text style={styles.cardTitle}>Exercise Breakdown</Text>
-            
+
             {workout.exercises.map((exercise, _index) => (
               <View key={exercise.exerciseId} style={styles.exerciseItem}>
                 <View style={styles.exerciseHeader}>
@@ -170,13 +190,18 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
                     {exercise.completed ? '✅' : '⏳'}
                   </Text>
                 </View>
-                
+
                 <View style={styles.exerciseStats}>
                   <Text style={styles.exerciseStat}>
-                    {exercise.sets.filter(set => set.completed).length}/{exercise.sets.length} sets
+                    {exercise.sets.filter(set => set.completed).length}/
+                    {exercise.sets.length} sets
                   </Text>
                   <Text style={styles.exerciseStat}>
-                    {exercise.sets.reduce((acc, set) => acc + (set.reps || 0), 0)} total reps
+                    {exercise.sets.reduce(
+                      (acc, set) => acc + (set.reps || 0),
+                      0,
+                    )}{' '}
+                    total reps
                   </Text>
                 </View>
               </View>
@@ -193,7 +218,7 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
                 </Text>
               </TouchableOpacity>
             </View>
-            
+
             {showNotes ? (
               <View style={styles.notesInput}>
                 <Text style={styles.notesPlaceholder}>
@@ -219,14 +244,14 @@ const WorkoutSummaryScreen: React.FC<WorkoutSummaryScreenProps> = ({ navigation 
               onPress={() => navigation.navigate('ProgressTracking')}
               style={styles.primaryButton}
             />
-            
+
             <SmartFitButton
               title="Share Workout"
               onPress={handleShareWorkout}
               variant="outline"
               style={styles.secondaryButton}
             />
-            
+
             <SmartFitButton
               title="Start New Workout"
               onPress={() => navigation.navigate('WorkoutPlan')}
@@ -249,40 +274,40 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[4],
-    paddingBottom: theme.spacing[8],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.xxl,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing[6],
+    paddingHorizontal: theme.spacing.xl,
   },
   errorText: {
     ...theme.typography.h2,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   backButton: {
     // Additional styles if needed
   },
   header: {
     alignItems: 'center',
-    marginBottom: theme.spacing[8],
+    marginBottom: theme.spacing.xxl,
   },
   title: {
     ...theme.typography.h1,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   date: {
     ...theme.typography.caption,
@@ -292,40 +317,40 @@ const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing[3],
-    marginBottom: theme.spacing[6],
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.xl,
   },
   statCard: {
     flex: 1,
     minWidth: '45%',
     alignItems: 'center',
-    paddingVertical: theme.spacing[4],
+    paddingVertical: theme.spacing.lg,
   },
   statValue: {
     ...theme.typography.h1,
     color: theme.colors.accent,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   statLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
   },
   highlightsCard: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   cardTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   highlightItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   highlightIcon: {
     fontSize: 24,
-    marginRight: theme.spacing[3],
+    marginRight: theme.spacing.md,
   },
   highlightContent: {
     flex: 1,
@@ -333,18 +358,18 @@ const styles = StyleSheet.create({
   highlightTitle: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   highlightValue: {
     ...theme.typography.h3,
     color: theme.colors.text,
   },
   exercisesCard: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   exerciseItem: {
-    marginBottom: theme.spacing[4],
-    paddingBottom: theme.spacing[3],
+    marginBottom: theme.spacing.lg,
+    paddingBottom: theme.spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
   },
@@ -352,7 +377,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   exerciseName: {
     ...theme.typography.h3,
@@ -364,20 +389,20 @@ const styles = StyleSheet.create({
   },
   exerciseStats: {
     flexDirection: 'row',
-    gap: theme.spacing[4],
+    gap: theme.spacing.lg,
   },
   exerciseStat: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
   },
   notesCard: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   notesHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   editButton: {
     ...theme.typography.body,
@@ -391,7 +416,7 @@ const styles = StyleSheet.create({
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     fontStyle: 'italic',
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   notesText: {
     ...theme.typography.body,
@@ -399,10 +424,10 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   buttonSection: {
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   primaryButton: {
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   secondaryButton: {
     // Additional styles if needed

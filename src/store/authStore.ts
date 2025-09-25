@@ -50,7 +50,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
         try {
           // Simulate API call (reduced for testing)
-          await new Promise(resolve => setTimeout(resolve, 10));
+          await new Promise<void>(resolve => setTimeout(resolve, 10));
 
           // Mock credential validation
           if (email === 'invalid@example.com' || password === 'wrongpassword') {
@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
         try {
           // Simulate API call (reduced for testing)
-          await new Promise(resolve => setTimeout(resolve, 10));
+          await new Promise<void>(resolve => setTimeout(resolve, 10));
 
           // Mock successful registration
           const user: User = {
@@ -137,7 +137,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
         try {
           // Simulate token refresh (reduced for testing)
-          await new Promise(resolve => setTimeout(resolve, 10));
+          await new Promise<void>(resolve => setTimeout(resolve, 10));
 
           const newTokens: AuthTokens = {
             accessToken: 'new-mock-access-token',

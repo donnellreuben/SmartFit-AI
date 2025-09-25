@@ -13,17 +13,20 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitCard } from '../components/SmartFitCard';
 import { ProgressChart } from '../components/ProgressChart';
-import { 
-  businessAnalyticsService, 
-  BusinessMetrics, 
-  UserSegment, 
+import {
+  businessAnalyticsService,
+  BusinessMetrics,
+  UserSegment,
   CohortAnalysis,
   FunnelAnalysis,
-  RevenueAnalysis 
+  RevenueAnalysis,
 } from '../services/businessAnalyticsService';
 import { theme } from '../constants/theme';
 
-type AnalyticsDashboardScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AnalyticsDashboard'>;
+type AnalyticsDashboardScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'AnalyticsDashboard'
+>;
 
 interface AnalyticsDashboardScreenProps {
   navigation: AnalyticsDashboardScreenNavigationProp;
@@ -31,14 +34,18 @@ interface AnalyticsDashboardScreenProps {
 
 const { width } = Dimensions.get('window');
 
-const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ navigation: _navigation }) => {
+const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({
+  navigation: _navigation,
+}) => {
   const [metrics, setMetrics] = useState<BusinessMetrics | null>(null);
   const [userSegments, setUserSegments] = useState<UserSegment[]>([]);
   const [cohortData, setCohortData] = useState<CohortAnalysis[]>([]);
   const [funnelData, setFunnelData] = useState<FunnelAnalysis[]>([]);
   const [revenueData, setRevenueData] = useState<RevenueAnalysis[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedTab, setSelectedTab] = useState<'overview' | 'users' | 'revenue' | 'funnel'>('overview');
+  const [selectedTab, setSelectedTab] = useState<
+    'overview' | 'users' | 'revenue' | 'funnel'
+  >('overview');
 
   useEffect(() => {
     loadAnalyticsData();
@@ -48,12 +55,12 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
     try {
       setIsLoading(true);
       await businessAnalyticsService.refreshAnalytics();
-      
+
       setMetrics(businessAnalyticsService.getMetrics());
       setUserSegments(businessAnalyticsService.getUserSegments());
       setCohortData(businessAnalyticsService.getCohortData());
       setFunnelData(businessAnalyticsService.getFunnelData());
-      setRevenueData(businessAnalyticsService.getRevenueAnalysis());
+      setRevenueData(await businessAnalyticsService.getRevenueAnalysis());
     } catch (error) {
       console.error('Failed to load analytics data:', error);
     } finally {
@@ -64,10 +71,7 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
   const renderTabButton = (tab: string, title: string) => (
     <TouchableOpacity
       key={tab}
-      style={[
-        styles.tabButton,
-        selectedTab === tab && styles.activeTabButton,
-      ]}
+      style={[styles.tabButton, selectedTab === tab && styles.activeTabButton]}
       onPress={() => setSelectedTab(tab as any)}
     >
       <Text
@@ -88,32 +92,44 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
       <View style={styles.tabContent}>
         <View style={styles.metricsGrid}>
           <SmartFitCard style={styles.metricCard}>
-            <Text style={styles.metricValue}>{metrics.totalUsers.toLocaleString()}</Text>
+            <Text style={styles.metricValue}>
+              {metrics.totalUsers.toLocaleString()}
+            </Text>
             <Text style={styles.metricLabel}>Total Users</Text>
           </SmartFitCard>
 
           <SmartFitCard style={styles.metricCard}>
-            <Text style={styles.metricValue}>{metrics.activeUsers.toLocaleString()}</Text>
+            <Text style={styles.metricValue}>
+              {metrics.activeUsers.toLocaleString()}
+            </Text>
             <Text style={styles.metricLabel}>Active Users</Text>
           </SmartFitCard>
 
           <SmartFitCard style={styles.metricCard}>
-            <Text style={styles.metricValue}>{metrics.retentionRate.toFixed(1)}%</Text>
+            <Text style={styles.metricValue}>
+              {metrics.retentionRate.toFixed(1)}%
+            </Text>
             <Text style={styles.metricLabel}>Retention Rate</Text>
           </SmartFitCard>
 
           <SmartFitCard style={styles.metricCard}>
-            <Text style={styles.metricValue}>${metrics.revenue.toLocaleString()}</Text>
+            <Text style={styles.metricValue}>
+              ${metrics.revenue.toLocaleString()}
+            </Text>
             <Text style={styles.metricLabel}>Total Revenue</Text>
           </SmartFitCard>
 
           <SmartFitCard style={styles.metricCard}>
-            <Text style={styles.metricValue}>{metrics.conversionRate.toFixed(1)}%</Text>
+            <Text style={styles.metricValue}>
+              {metrics.conversionRate.toFixed(1)}%
+            </Text>
             <Text style={styles.metricLabel}>Conversion Rate</Text>
           </SmartFitCard>
 
           <SmartFitCard style={styles.metricCard}>
-            <Text style={styles.metricValue}>${metrics.averageRevenuePerUser.toFixed(2)}</Text>
+            <Text style={styles.metricValue}>
+              ${metrics.averageRevenuePerUser.toFixed(2)}
+            </Text>
             <Text style={styles.metricLabel}>ARPU</Text>
           </SmartFitCard>
         </View>
@@ -127,8 +143,13 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
             }))}
             title="Monthly Revenue"
             showTrend={true}
-            trend={revenueData.length > 1 ? 
-              ((revenueData[revenueData.length - 1].netRevenue - revenueData[0].netRevenue) / revenueData[0].netRevenue) * 100 : 0
+            trend={
+              revenueData.length > 1
+                ? ((revenueData[revenueData.length - 1].netRevenue -
+                    revenueData[0].netRevenue) /
+                    revenueData[0].netRevenue) *
+                  100
+                : 0
             }
           />
         </SmartFitCard>
@@ -140,40 +161,44 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
     <View style={styles.tabContent}>
       <SmartFitCard style={styles.segmentsCard}>
         <Text style={styles.cardTitle}>User Segments</Text>
-        {userSegments.map((segment) => (
+        {userSegments.map(segment => (
           <View key={segment.id} style={styles.segmentItem}>
             <View style={styles.segmentHeader}>
               <Text style={styles.segmentName}>{segment.name}</Text>
-              <Text style={styles.segmentCount}>{segment.userCount.toLocaleString()}</Text>
+              <Text style={styles.segmentCount}>
+                {segment.userCount.toLocaleString()}
+              </Text>
             </View>
             <Text style={styles.segmentDescription}>{segment.description}</Text>
             <View style={styles.segmentBar}>
-              <View 
+              <View
                 style={[
-                  styles.segmentBarFill, 
-                  { width: `${segment.percentage}%` }
-                ]} 
+                  styles.segmentBarFill,
+                  { width: `${segment.percentage}%` },
+                ]}
               />
             </View>
-            <Text style={styles.segmentPercentage}>{segment.percentage.toFixed(1)}%</Text>
+            <Text style={styles.segmentPercentage}>
+              {segment.percentage.toFixed(1)}%
+            </Text>
           </View>
         ))}
       </SmartFitCard>
 
       <SmartFitCard style={styles.cohortCard}>
         <Text style={styles.cardTitle}>Cohort Analysis</Text>
-        {cohortData.slice(0, 3).map((cohort) => (
+        {cohortData.slice(0, 3).map(cohort => (
           <View key={cohort.cohort} style={styles.cohortItem}>
             <Text style={styles.cohortName}>{cohort.cohort}</Text>
             <Text style={styles.cohortUsers}>{cohort.users} users</Text>
             <View style={styles.cohortRetention}>
               {cohort.retention.slice(0, 6).map((retention, index) => (
                 <View key={index} style={styles.retentionBar}>
-                  <View 
+                  <View
                     style={[
                       styles.retentionBarFill,
-                      { height: `${retention * 100}%` }
-                    ]} 
+                      { height: `${retention * 100}%` },
+                    ]}
                   />
                   <Text style={styles.retentionLabel}>M{index}</Text>
                 </View>
@@ -189,31 +214,37 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
     <View style={styles.tabContent}>
       <SmartFitCard style={styles.revenueCard}>
         <Text style={styles.cardTitle}>Revenue Breakdown</Text>
-        {revenueData.slice(-6).map((item) => (
+        {revenueData.slice(-6).map(item => (
           <View key={item.period} style={styles.revenueItem}>
             <View style={styles.revenueHeader}>
               <Text style={styles.revenuePeriod}>{item.period}</Text>
-              <Text style={styles.revenueAmount}>${item.netRevenue.toLocaleString()}</Text>
+              <Text style={styles.revenueAmount}>
+                ${item.netRevenue.toLocaleString()}
+              </Text>
             </View>
             <View style={styles.revenueBreakdown}>
               <View style={styles.revenueBar}>
-                <View 
+                <View
                   style={[
                     styles.revenueBarFill,
-                    { 
-                      width: `${(item.subscriptionRevenue / item.netRevenue) * 100}%`,
+                    {
+                      width: `${
+                        (item.subscriptionRevenue / item.netRevenue) * 100
+                      }%`,
                       backgroundColor: theme.colors.accent,
-                    }
-                  ]} 
+                    },
+                  ]}
                 />
-                <View 
+                <View
                   style={[
                     styles.revenueBarFill,
-                    { 
-                      width: `${(item.inAppPurchaseRevenue / item.netRevenue) * 100}%`,
+                    {
+                      width: `${
+                        (item.inAppPurchaseRevenue / item.netRevenue) * 100
+                      }%`,
                       backgroundColor: theme.colors.success,
-                    }
-                  ]} 
+                    },
+                  ]}
                 />
               </View>
               <View style={styles.revenueLabels}>
@@ -226,7 +257,8 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
               </View>
             </View>
             <Text style={styles.revenueGrowth}>
-              Growth: {item.growthRate > 0 ? '+' : ''}{item.growthRate.toFixed(1)}%
+              Growth: {item.growthRate > 0 ? '+' : ''}
+              {item.growthRate.toFixed(1)}%
             </Text>
           </View>
         ))}
@@ -242,7 +274,9 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
           <View key={stage.stage} style={styles.funnelItem}>
             <View style={styles.funnelStage}>
               <Text style={styles.funnelStageName}>{stage.stage}</Text>
-              <Text style={styles.funnelStageUsers}>{stage.users.toLocaleString()} users</Text>
+              <Text style={styles.funnelStageUsers}>
+                {stage.users.toLocaleString()} users
+              </Text>
             </View>
             <View style={styles.funnelMetrics}>
               <Text style={styles.funnelConversion}>
@@ -308,7 +342,10 @@ const AnalyticsDashboardScreen: React.FC<AnalyticsDashboardScreenProps> = ({ nav
         {renderTabButton('funnel', 'Funnel')}
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {renderTabContent()}
       </ScrollView>
     </SafeAreaView>
@@ -344,7 +381,7 @@ const styles = StyleSheet.create({
   refreshButton: {
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.borderRadius.small,
     borderWidth: 1,
     borderColor: theme.colors.accent,
   },
@@ -363,7 +400,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
     marginHorizontal: theme.spacing.xs,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.borderRadius.small,
     backgroundColor: theme.colors.surface,
     alignItems: 'center',
   },

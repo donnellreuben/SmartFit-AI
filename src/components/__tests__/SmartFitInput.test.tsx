@@ -67,7 +67,6 @@ describe('SmartFitInput', () => {
           placeholder="Enter email"
           value=""
           onChangeText={mockOnChangeText}
-          type="email"
         />,
       );
 
@@ -80,7 +79,6 @@ describe('SmartFitInput', () => {
           placeholder="Enter password"
           value=""
           onChangeText={mockOnChangeText}
-          type="password"
         />,
       );
 
@@ -107,7 +105,7 @@ describe('SmartFitInput', () => {
           placeholder="Test input"
           value=""
           onChangeText={mockOnChangeText}
-          variant="outlined"
+          variant="outline"
         />,
       );
 

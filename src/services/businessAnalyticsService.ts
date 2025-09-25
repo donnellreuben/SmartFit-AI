@@ -145,11 +145,26 @@ class BusinessAnalyticsService {
 
   private async saveAnalyticsData() {
     try {
-      await AsyncStorage.setItem('business_metrics', JSON.stringify(this.metrics));
-      await AsyncStorage.setItem('user_segments', JSON.stringify(this.userSegments));
-      await AsyncStorage.setItem('cohort_analysis', JSON.stringify(this.cohortData));
-      await AsyncStorage.setItem('funnel_analysis', JSON.stringify(this.funnelData));
-      await AsyncStorage.setItem('revenue_analysis', JSON.stringify(this.revenueData));
+      await AsyncStorage.setItem(
+        'business_metrics',
+        JSON.stringify(this.metrics),
+      );
+      await AsyncStorage.setItem(
+        'user_segments',
+        JSON.stringify(this.userSegments),
+      );
+      await AsyncStorage.setItem(
+        'cohort_analysis',
+        JSON.stringify(this.cohortData),
+      );
+      await AsyncStorage.setItem(
+        'funnel_analysis',
+        JSON.stringify(this.funnelData),
+      );
+      await AsyncStorage.setItem(
+        'revenue_analysis',
+        JSON.stringify(this.revenueData),
+      );
     } catch (error) {
       console.error('Failed to save analytics data:', error);
     }
@@ -160,33 +175,37 @@ class BusinessAnalyticsService {
     try {
       // const analyticsData = await analyticsService.calculateBusinessMetrics();
       const events = await analyticsService.exportAnalyticsData();
-      
+
       // Calculate user metrics
       const uniqueUsers = new Set(events.map(event => event.userId));
       const activeUsers = this.calculateActiveUsers(events);
       const newUsers = this.calculateNewUsers(events);
       const returningUsers = this.calculateReturningUsers(events);
-      
+
       // Calculate engagement metrics
       const engagementScore = this.calculateEngagementScore(events);
-      const averageSessionDuration = this.calculateAverageSessionDuration(events);
+      const averageSessionDuration =
+        this.calculateAverageSessionDuration(events);
       const totalSessions = this.calculateTotalSessions(events);
-      
+
       // Calculate retention and churn
       const retentionRate = this.calculateRetentionRate(events);
       const churnRate = this.calculateChurnRate(events);
-      
+
       // Calculate conversion metrics
       const conversionRate = this.calculateConversionRate(events);
-      
+
       // Calculate revenue metrics
       const revenue = this.calculateRevenue(events);
       const averageRevenuePerUser = revenue / Math.max(uniqueUsers.size, 1);
       const lifetimeValue = this.calculateLifetimeValue(events);
-      
+
       // Calculate acquisition metrics
       const costPerAcquisition = this.calculateCostPerAcquisition();
-      const returnOnInvestment = this.calculateReturnOnInvestment(revenue, costPerAcquisition);
+      const returnOnInvestment = this.calculateReturnOnInvestment(
+        revenue,
+        costPerAcquisition,
+      );
 
       this.metrics = {
         totalUsers: uniqueUsers.size,
@@ -215,11 +234,11 @@ class BusinessAnalyticsService {
   private calculateActiveUsers(events: any[]): number {
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
-    
-    const recentEvents = events.filter(event => 
-      new Date(event.timestamp) > lastWeek
+
+    const recentEvents = events.filter(
+      event => new Date(event.timestamp) > lastWeek,
     );
-    
+
     const uniqueUsers = new Set(recentEvents.map(event => event.userId));
     return uniqueUsers.size;
   }
@@ -227,23 +246,24 @@ class BusinessAnalyticsService {
   private calculateNewUsers(events: any[]): number {
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
-    
-    const newUserEvents = events.filter(event => 
-      new Date(event.timestamp) > lastWeek && 
-      event.name === 'user_registration'
+
+    const newUserEvents = events.filter(
+      event =>
+        new Date(event.timestamp) > lastWeek &&
+        event.name === 'user_registration',
     );
-    
+
     return newUserEvents.length;
   }
 
   private calculateReturningUsers(events: any[]): number {
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
-    
-    const recentEvents = events.filter(event => 
-      new Date(event.timestamp) > lastWeek
+
+    const recentEvents = events.filter(
+      event => new Date(event.timestamp) > lastWeek,
     );
-    
+
     const uniqueUsers = new Set(recentEvents.map(event => event.userId));
     return uniqueUsers.size;
   }
@@ -254,7 +274,9 @@ class BusinessAnalyticsService {
   }
 
   private calculateAverageSessionDuration(events: any[]): number {
-    const sessionEvents = events.filter(event => event.name === 'session_start');
+    const sessionEvents = events.filter(
+      event => event.name === 'session_start',
+    );
     return sessionEvents.length > 0 ? 30 : 0; // Mock 30 minutes average
   }
 
@@ -274,19 +296,20 @@ class BusinessAnalyticsService {
 
   private calculateConversionRate(events: any[]): number {
     const totalUsers = new Set(events.map(event => event.userId)).size;
-    const convertedUsers = events.filter(event => 
-      event.name === 'subscription_purchase'
+    const convertedUsers = events.filter(
+      event => event.name === 'subscription_purchase',
     ).length;
-    
+
     return totalUsers > 0 ? convertedUsers / totalUsers : 0;
   }
 
   private calculateRevenue(events: any[]): number {
-    const revenueEvents = events.filter(event => 
-      event.name === 'subscription_purchase' || 
-      event.name === 'in_app_purchase'
+    const revenueEvents = events.filter(
+      event =>
+        event.name === 'subscription_purchase' ||
+        event.name === 'in_app_purchase',
     );
-    
+
     return revenueEvents.reduce((total, event) => {
       return total + (event.value || 0);
     }, 0);
@@ -295,7 +318,7 @@ class BusinessAnalyticsService {
   private calculateLifetimeValue(events: any[]): number {
     const revenue = this.calculateRevenue(events);
     const uniqueUsers = new Set(events.map(event => event.userId)).size;
-    
+
     return uniqueUsers > 0 ? revenue / uniqueUsers : 0;
   }
 
@@ -373,16 +396,20 @@ class BusinessAnalyticsService {
 
       // Calculate segment sizes
       const totalUsers = new Set(events.map(event => event.userId)).size;
-      
+
       for (const segment of segments) {
-        const segmentUsers = this.calculateSegmentUsers(events, segment.criteria);
+        const segmentUsers = this.calculateSegmentUsers(
+          events,
+          segment.criteria,
+        );
         segment.userCount = segmentUsers;
-        segment.percentage = totalUsers > 0 ? (segmentUsers / totalUsers) * 100 : 0;
+        segment.percentage =
+          totalUsers > 0 ? (segmentUsers / totalUsers) * 100 : 0;
       }
 
       this.userSegments = segments;
       await this.saveAnalyticsData();
-      
+
       return segments;
     } catch (error) {
       console.error('Failed to create user segments:', error);
@@ -394,33 +421,41 @@ class BusinessAnalyticsService {
     // Simplified calculation - in a real app, you'd have more sophisticated logic
     const uniqueUsers = new Set(events.map(event => event.userId));
     let count = 0;
-    
+
     for (const userId of uniqueUsers) {
       const userEvents = events.filter(event => event.userId === userId);
-      const sessionCount = userEvents.filter(event => event.name === 'session_start').length;
+      const sessionCount = userEvents.filter(
+        event => event.name === 'session_start',
+      ).length;
       const lastActive = this.getLastActiveDate(userEvents);
-      const daysSinceActive = lastActive ? 
-        (new Date().getTime() - new Date(lastActive).getTime()) / (1000 * 60 * 60 * 24) : 999;
-      
+      const daysSinceActive = lastActive
+        ? (new Date().getTime() - new Date(lastActive).getTime()) /
+          (1000 * 60 * 60 * 24)
+        : 999;
+
       let matches = true;
-      
-      if (criteria.minSessions && sessionCount < criteria.minSessions) matches = false;
-      if (criteria.maxSessions && sessionCount > criteria.maxSessions) matches = false;
-      if (criteria.lastActiveDays && daysSinceActive > criteria.lastActiveDays) matches = false;
-      
+
+      if (criteria.minSessions && sessionCount < criteria.minSessions)
+        matches = false;
+      if (criteria.maxSessions && sessionCount > criteria.maxSessions)
+        matches = false;
+      if (criteria.lastActiveDays && daysSinceActive > criteria.lastActiveDays)
+        matches = false;
+
       if (matches) count++;
     }
-    
+
     return count;
   }
 
   private getLastActiveDate(userEvents: any[]): string | null {
     if (userEvents.length === 0) return null;
-    
-    const sortedEvents = userEvents.sort((a, b) => 
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+
+    const sortedEvents = userEvents.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
     );
-    
+
     return sortedEvents[0].timestamp;
   }
 
@@ -429,25 +464,27 @@ class BusinessAnalyticsService {
     try {
       const events = await analyticsService.exportAnalyticsData();
       const cohorts: CohortAnalysis[] = [];
-      
+
       // Group users by registration month
       const userCohorts = new Map<string, Set<string>>();
-      
+
       events.forEach(event => {
         if (event.name === 'user_registration') {
-          const cohort = new Date(event.timestamp).toISOString().substring(0, 7); // YYYY-MM
+          const cohort = new Date(event.timestamp)
+            .toISOString()
+            .substring(0, 7); // YYYY-MM
           if (!userCohorts.has(cohort)) {
             userCohorts.set(cohort, new Set());
           }
           userCohorts.get(cohort)!.add(event.userId);
         }
       });
-      
+
       // Calculate retention for each cohort
       for (const [cohort, users] of userCohorts) {
         const retention = this.calculateCohortRetention(events, users, cohort);
         const revenue = this.calculateCohortRevenue(events, users);
-        
+
         cohorts.push({
           cohort,
           period: cohort,
@@ -456,10 +493,10 @@ class BusinessAnalyticsService {
           revenue,
         });
       }
-      
+
       this.cohortData = cohorts;
       await this.saveAnalyticsData();
-      
+
       return cohorts;
     } catch (error) {
       console.error('Failed to perform cohort analysis:', error);
@@ -467,55 +504,66 @@ class BusinessAnalyticsService {
     }
   }
 
-  private calculateCohortRetention(events: any[], users: Set<string>, _cohort: string): number[] {
+  private calculateCohortRetention(
+    events: any[],
+    users: Set<string>,
+    _cohort: string,
+  ): number[] {
     const retention: number[] = [];
-    const cohortDate = new Date(cohort + '-01');
-    
+    const cohortDate = new Date(_cohort + '-01');
+
     // Calculate retention for months 0-12
     for (let month = 0; month <= 12; month++) {
       const targetDate = new Date(cohortDate);
       targetDate.setMonth(targetDate.getMonth() + month);
-      
+
       const activeUsers = new Set<string>();
-      
+
       events.forEach(event => {
         if (users.has(event.userId)) {
           const eventDate = new Date(event.timestamp);
-          if (eventDate >= targetDate && eventDate < new Date(targetDate.getTime() + 30 * 24 * 60 * 60 * 1000)) {
+          if (
+            eventDate >= targetDate &&
+            eventDate <
+              new Date(targetDate.getTime() + 30 * 24 * 60 * 60 * 1000)
+          ) {
             activeUsers.add(event.userId);
           }
         }
       });
-      
+
       retention.push(activeUsers.size / users.size);
     }
-    
+
     return retention;
   }
 
   private calculateCohortRevenue(_events: any[], users: Set<string>): number[] {
     const revenue: number[] = [];
-    
+
     // Calculate revenue for months 0-12
     for (let month = 0; month <= 12; month++) {
       let monthRevenue = 0;
-      
-      events.forEach(event => {
-        if (users.has(event.userId) && 
-            (event.name === 'subscription_purchase' || event.name === 'in_app_purchase')) {
+
+      _events.forEach((event: any) => {
+        if (
+          users.has(event.userId) &&
+          (event.name === 'subscription_purchase' ||
+            event.name === 'in_app_purchase')
+        ) {
           const eventDate = new Date(event.timestamp);
           const cohortDate = new Date();
           cohortDate.setMonth(cohortDate.getMonth() - month);
-          
+
           if (eventDate >= cohortDate) {
             monthRevenue += event.value || 0;
           }
         }
       });
-      
+
       revenue.push(monthRevenue);
     }
-    
+
     return revenue;
   }
 
@@ -549,32 +597,45 @@ class BusinessAnalyticsService {
           dropOffRate: 0,
         },
       ];
-      
+
       // Calculate funnel metrics
-      const installs = events.filter(event => event.name === 'app_install').length;
-      const registrations = events.filter(event => event.name === 'user_registration').length;
-      const firstWorkouts = events.filter(event => event.name === 'workout_start').length;
-      const subscriptions = events.filter(event => event.name === 'subscription_purchase').length;
-      
+      const installs = events.filter(
+        event => event.name === 'app_install',
+      ).length;
+      const registrations = events.filter(
+        event => event.name === 'user_registration',
+      ).length;
+      const firstWorkouts = events.filter(
+        event => event.name === 'workout_start',
+      ).length;
+      const subscriptions = events.filter(
+        event => event.name === 'subscription_purchase',
+      ).length;
+
       funnel[0].users = installs;
       funnel[1].users = registrations;
       funnel[2].users = firstWorkouts;
       funnel[3].users = subscriptions;
-      
+
       // Calculate conversion rates
       funnel[1].conversionRate = installs > 0 ? registrations / installs : 0;
-      funnel[2].conversionRate = registrations > 0 ? firstWorkouts / registrations : 0;
-      funnel[3].conversionRate = firstWorkouts > 0 ? subscriptions / firstWorkouts : 0;
-      
+      funnel[2].conversionRate =
+        registrations > 0 ? firstWorkouts / registrations : 0;
+      funnel[3].conversionRate =
+        firstWorkouts > 0 ? subscriptions / firstWorkouts : 0;
+
       // Calculate drop-off rates
       funnel[0].dropOffRate = 0;
-      funnel[1].dropOffRate = installs > 0 ? (installs - registrations) / installs : 0;
-      funnel[2].dropOffRate = registrations > 0 ? (registrations - firstWorkouts) / registrations : 0;
-      funnel[3].dropOffRate = firstWorkouts > 0 ? (firstWorkouts - subscriptions) / firstWorkouts : 0;
-      
+      funnel[1].dropOffRate =
+        installs > 0 ? (installs - registrations) / installs : 0;
+      funnel[2].dropOffRate =
+        registrations > 0 ? (registrations - firstWorkouts) / registrations : 0;
+      funnel[3].dropOffRate =
+        firstWorkouts > 0 ? (firstWorkouts - subscriptions) / firstWorkouts : 0;
+
       this.funnelData = funnel;
       await this.saveAnalyticsData();
-      
+
       return funnel;
     } catch (error) {
       console.error('Failed to perform funnel analysis:', error);
@@ -587,26 +648,38 @@ class BusinessAnalyticsService {
     try {
       const events = await analyticsService.exportAnalyticsData();
       const revenueData: RevenueAnalysis[] = [];
-      
+
       // Group events by month
-      const monthlyRevenue = new Map<string, {
-        total: number;
-        subscription: number;
-        inApp: number;
-        ads: number;
-        refunds: number;
-      }>();
-      
+      const monthlyRevenue = new Map<
+        string,
+        {
+          total: number;
+          subscription: number;
+          inApp: number;
+          ads: number;
+          refunds: number;
+        }
+      >();
+
       events.forEach(event => {
-        if (event.name === 'subscription_purchase' || event.name === 'in_app_purchase') {
+        if (
+          event.name === 'subscription_purchase' ||
+          event.name === 'in_app_purchase'
+        ) {
           const month = new Date(event.timestamp).toISOString().substring(0, 7);
           if (!monthlyRevenue.has(month)) {
-            monthlyRevenue.set(month, { total: 0, subscription: 0, inApp: 0, ads: 0, refunds: 0 });
+            monthlyRevenue.set(month, {
+              total: 0,
+              subscription: 0,
+              inApp: 0,
+              ads: 0,
+              refunds: 0,
+            });
           }
-          
+
           const revenue = event.value || 0;
           const data = monthlyRevenue.get(month)!;
-          
+
           data.total += revenue;
           if (event.name === 'subscription_purchase') {
             data.subscription += revenue;
@@ -615,14 +688,16 @@ class BusinessAnalyticsService {
           }
         }
       });
-      
+
       // Convert to array and calculate growth rates
       let previousRevenue = 0;
-      
+
       for (const [month, data] of monthlyRevenue) {
-        const growthRate = previousRevenue > 0 ? 
-          ((data.total - previousRevenue) / previousRevenue) * 100 : 0;
-        
+        const growthRate =
+          previousRevenue > 0
+            ? ((data.total - previousRevenue) / previousRevenue) * 100
+            : 0;
+
         revenueData.push({
           period: month,
           totalRevenue: data.total,
@@ -633,13 +708,13 @@ class BusinessAnalyticsService {
           netRevenue: data.total - data.refunds,
           growthRate,
         });
-        
+
         previousRevenue = data.total;
       }
-      
+
       this.revenueData = revenueData;
       await this.saveAnalyticsData();
-      
+
       return revenueData;
     } catch (error) {
       console.error('Failed to perform revenue analysis:', error);
@@ -674,6 +749,16 @@ class BusinessAnalyticsService {
     await this.performCohortAnalysis();
     await this.performFunnelAnalysis();
     await this.performRevenueAnalysis();
+  }
+
+  // MARK: - Revenue Analysis
+  async getRevenueAnalysis(): Promise<any> {
+    // Mock implementation
+    return {
+      totalRevenue: 0,
+      monthlyRevenue: [],
+      revenueBySource: {},
+    };
   }
 }
 

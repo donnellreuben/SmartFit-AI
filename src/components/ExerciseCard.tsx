@@ -1,27 +1,8 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SmartFitCard } from './SmartFitCard';
 import { theme } from '../constants/theme';
-
-export interface Exercise {
-  id: string;
-  name: string;
-  muscleGroups: string[];
-  equipment: string[];
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  sets: number;
-  reps: string; // "8-12" or "30 seconds"
-  restTime: number; // seconds
-  videoUrl: string;
-  instructions: string[];
-  tips: string[];
-  alternatives: Exercise[];
-}
+import { Exercise } from '../types/exercise';
 
 export interface ExerciseCardProps {
   exercise: Exercise;
@@ -55,13 +36,15 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
     }
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+    return remainingSeconds > 0
+      ? `${minutes}m ${remainingSeconds}s`
+      : `${minutes}m`;
   };
 
   return (
     <SmartFitCard
       onPress={onPress}
-      style={[styles.card, style]}
+      style={StyleSheet.flatten([styles.card, style])}
       variant="elevated"
     >
       <View style={styles.content}>
@@ -77,7 +60,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               ))}
             </View>
           </View>
-          
+
           {/* Video Thumbnail */}
           <TouchableOpacity
             style={styles.videoContainer}
@@ -98,15 +81,17 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             <Text style={styles.detailLabel}>Sets:</Text>
             <Text style={styles.detailValue}>{exercise.sets}</Text>
           </View>
-          
+
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Reps:</Text>
             <Text style={styles.detailValue}>{exercise.reps}</Text>
           </View>
-          
+
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Rest:</Text>
-            <Text style={styles.detailValue}>{formatRestTime(exercise.restTime)}</Text>
+            <Text style={styles.detailValue}>
+              {formatRestTime(exercise.restTime)}
+            </Text>
           </View>
         </View>
 
@@ -115,12 +100,19 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           <View style={styles.equipmentContainer}>
             <Text style={styles.equipmentLabel}>Equipment:</Text>
             <Text style={styles.equipmentText}>
-              {exercise.equipment.length > 0 ? exercise.equipment.join(', ') : 'Bodyweight'}
+              {exercise.equipment.length > 0
+                ? exercise.equipment.join(', ')
+                : 'Bodyweight'}
             </Text>
           </View>
-          
+
           <View style={styles.difficultyContainer}>
-            <View style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(exercise.difficulty) }]}>
+            <View
+              style={[
+                styles.difficultyBadge,
+                { backgroundColor: getDifficultyColor(exercise.difficulty) },
+              ]}
+            >
               <Text style={styles.difficultyText}>{exercise.difficulty}</Text>
             </View>
           </View>
@@ -132,7 +124,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   content: {
     flex: 1,
@@ -141,26 +133,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   titleContainer: {
     flex: 1,
-    marginRight: theme.spacing[3],
+    marginRight: theme.spacing.md,
   },
   exerciseName: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   muscleGroups: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing[1],
+    gap: theme.spacing.xs,
   },
   muscleTag: {
     backgroundColor: theme.colors.accent,
-    paddingHorizontal: theme.spacing[2],
-    paddingVertical: theme.spacing[1],
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
     borderRadius: theme.borderRadius.small,
   },
   muscleText: {
@@ -197,8 +189,8 @@ const styles = StyleSheet.create({
   details: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: theme.spacing[3],
-    paddingHorizontal: theme.spacing[1],
+    marginBottom: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xs,
   },
   detailRow: {
     flex: 1,
@@ -207,7 +199,7 @@ const styles = StyleSheet.create({
   detailLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   detailValue: {
     ...theme.typography.body,
@@ -221,12 +213,12 @@ const styles = StyleSheet.create({
   },
   equipmentContainer: {
     flex: 1,
-    marginRight: theme.spacing[2],
+    marginRight: theme.spacing.sm,
   },
   equipmentLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   equipmentText: {
     ...theme.typography.caption,
@@ -236,8 +228,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   difficultyBadge: {
-    paddingHorizontal: theme.spacing[2],
-    paddingVertical: theme.spacing[1],
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
     borderRadius: theme.borderRadius.small,
   },
   difficultyText: {

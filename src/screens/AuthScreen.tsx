@@ -32,7 +32,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ navigation }) => {
     }
 
     setLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
@@ -46,7 +46,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
@@ -55,10 +55,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ navigation }) => {
             {isSignUp ? 'Create Account' : 'Welcome Back'}
           </Text>
           <Text style={styles.subtitle}>
-            {isSignUp 
-              ? 'Sign up to start your fitness journey' 
-              : 'Sign in to continue your progress'
-            }
+            {isSignUp
+              ? 'Sign up to start your fitness journey'
+              : 'Sign in to continue your progress'}
           </Text>
 
           <View style={styles.form}>
@@ -90,7 +89,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ navigation }) => {
 
             <View style={styles.toggleContainer}>
               <Text style={styles.toggleText}>
-                {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+                {isSignUp
+                  ? 'Already have an account?'
+                  : "Don't have an account?"}
               </Text>
               <SmartFitButton
                 title={isSignUp ? 'Sign In' : 'Sign Up'}
@@ -117,36 +118,36 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[8],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.xxl,
   },
   title: {
     ...theme.typography.h1,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: theme.spacing[8],
+    marginBottom: theme.spacing.xxl,
   },
   form: {
     flex: 1,
   },
   authButton: {
-    marginTop: theme.spacing[4],
-    marginBottom: theme.spacing[6],
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.xl,
   },
   toggleContainer: {
     alignItems: 'center',
-    marginTop: theme.spacing[4],
+    marginTop: theme.spacing.lg,
   },
   toggleText: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   toggleButton: {
     minWidth: 120,

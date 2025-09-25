@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Exercise } from '../components/ExerciseCard';
+import { Exercise } from '../types/exercise';
 
 export interface WorkoutSession {
   id: string;
@@ -18,6 +18,7 @@ export interface WorkoutExercise {
   sets: WorkoutSet[];
   restTime: number;
   completed: boolean;
+  videoUrl?: string;
 }
 
 export interface WorkoutSet {
@@ -45,6 +46,7 @@ interface WorkoutState {
   workoutPlans: WorkoutPlan[];
   activePlan: WorkoutPlan | null;
   isWorkoutActive: boolean;
+  currentExerciseIndex: number;
   isLoading: boolean;
   error: string | null;
 }
@@ -53,10 +55,27 @@ interface WorkoutActions {
   startWorkout: (plan: WorkoutPlan) => void;
   endWorkout: () => void;
   updateCurrentWorkout: (updates: Partial<WorkoutSession>) => void;
-  completeSet: (exerciseId: string, setNumber: number, data: Partial<WorkoutSet>) => void;
+  completeSet: (
+    exerciseId: string,
+    setNumber: number,
+    data: Partial<WorkoutSet>,
+  ) => void;
   completeExercise: (exerciseId: string) => void;
+  nextExercise: () => void;
+  previousExercise: () => void;
+  updateSetData: (
+    exerciseId: string,
+    setNumber: number,
+    data: Partial<WorkoutSet>,
+  ) => void;
+  clearWorkout: () => void;
   addWorkoutToHistory: (workout: WorkoutSession) => void;
-  generateWorkoutPlan: (equipment: string[], goals: string[], duration: number) => Promise<void>;
+  generateWorkoutPlan: (params: {
+    goals: string[];
+    availableEquipment: string[];
+    duration: number;
+    difficulty: string;
+  }) => Promise<WorkoutPlan>;
   setActivePlan: (plan: WorkoutPlan | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -72,6 +91,7 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
       workoutPlans: [],
       activePlan: null,
       isWorkoutActive: false,
+      currentExerciseIndex: 0,
       isLoading: false,
       error: null,
 
@@ -101,6 +121,7 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
           currentWorkout: workoutSession,
           isWorkoutActive: true,
           activePlan: plan,
+          currentExerciseIndex: 0,
         });
       },
 
@@ -111,13 +132,16 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         const completedWorkout = {
           ...currentWorkout,
           completed: true,
-          duration: Math.floor((Date.now() - new Date(currentWorkout.date).getTime()) / 60000),
+          duration: Math.floor(
+            (Date.now() - new Date(currentWorkout.date).getTime()) / 60000,
+          ),
         };
 
         set({
           currentWorkout: null,
           isWorkoutActive: false,
           activePlan: null,
+          currentExerciseIndex: 0,
           workoutHistory: [completedWorkout, ...get().workoutHistory],
         });
       },
@@ -131,7 +155,11 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         });
       },
 
-      completeSet: (exerciseId: string, setNumber: number, data: Partial<WorkoutSet>) => {
+      completeSet: (
+        exerciseId: string,
+        setNumber: number,
+        data: Partial<WorkoutSet>,
+      ) => {
         const { currentWorkout } = get();
         if (!currentWorkout) return;
 
@@ -175,40 +203,106 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         });
       },
 
+      nextExercise: () => {
+        const { currentWorkout, currentExerciseIndex } = get();
+        if (!currentWorkout) return;
+
+        const nextIndex = currentExerciseIndex + 1;
+        if (nextIndex < currentWorkout.exercises.length) {
+          set({ currentExerciseIndex: nextIndex });
+        }
+      },
+
+      previousExercise: () => {
+        const { currentExerciseIndex } = get();
+        if (currentExerciseIndex > 0) {
+          set({ currentExerciseIndex: currentExerciseIndex - 1 });
+        }
+      },
+
+      updateSetData: (
+        exerciseId: string,
+        setNumber: number,
+        data: Partial<WorkoutSet>,
+      ) => {
+        const { currentWorkout } = get();
+        if (!currentWorkout) return;
+
+        const updatedExercises = currentWorkout.exercises.map(exercise => {
+          if (exercise.exerciseId === exerciseId) {
+            const updatedSets = exercise.sets.map(setItem => {
+              if (setItem.setNumber === setNumber) {
+                return { ...setItem, ...data };
+              }
+              return setItem;
+            });
+            return { ...exercise, sets: updatedSets };
+          }
+          return exercise;
+        });
+
+        set({
+          currentWorkout: {
+            ...currentWorkout,
+            exercises: updatedExercises,
+          },
+        });
+      },
+
+      clearWorkout: () => {
+        set({
+          currentWorkout: null,
+          isWorkoutActive: false,
+          activePlan: null,
+          currentExerciseIndex: 0,
+        });
+      },
+
       addWorkoutToHistory: (workout: WorkoutSession) => {
         set({
           workoutHistory: [workout, ...get().workoutHistory],
         });
       },
 
-      generateWorkoutPlan: async (equipment: string[], goals: string[], duration: number) => {
+      generateWorkoutPlan: async (params: {
+        goals: string[];
+        availableEquipment: string[];
+        duration: number;
+        difficulty: string;
+      }) => {
         set({ isLoading: true, error: null });
-        
+
         try {
           // Simulate AI workout plan generation
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
+          await new Promise<void>(resolve => setTimeout(resolve, 2000));
+
           // Mock workout plan based on equipment and goals
           const mockPlan: WorkoutPlan = {
             id: `plan-${Date.now()}`,
             name: 'AI Generated Workout',
             exercises: [], // Would be populated by AI
-            estimatedDuration: duration,
-            difficulty: 'intermediate',
+            estimatedDuration: params.duration,
+            difficulty: params.difficulty as
+              | 'beginner'
+              | 'intermediate'
+              | 'advanced',
             createdAt: new Date().toISOString(),
             isActive: true,
           };
-          
+
           set({
             workoutPlans: [mockPlan, ...get().workoutPlans],
             activePlan: mockPlan,
             isLoading: false,
           });
+
+          return mockPlan;
         } catch (error) {
           set({
             isLoading: false,
             error: 'Failed to generate workout plan',
           });
+          throw error;
         }
       },
 
@@ -222,11 +316,11 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
     }),
     {
       name: 'workout-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         workoutHistory: state.workoutHistory,
         workoutPlans: state.workoutPlans,
         activePlan: state.activePlan,
       }),
-    }
-  )
+    },
+  ),
 );

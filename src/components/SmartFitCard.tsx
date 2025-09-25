@@ -37,13 +37,13 @@ export const SmartFitCard: React.FC<SmartFitCardProps> = ({
     const paddingStyles: Record<string, ViewStyle> = {
       none: {},
       small: {
-        padding: theme.spacing[2],
+        padding: theme.spacing.sm,
       },
       medium: {
-        padding: theme.spacing[4],
+        padding: theme.spacing.lg,
       },
       large: {
-        padding: theme.spacing[6],
+        padding: theme.spacing.xl,
       },
     };
 
@@ -51,13 +51,13 @@ export const SmartFitCard: React.FC<SmartFitCardProps> = ({
     const marginStyles: Record<string, ViewStyle> = {
       none: {},
       small: {
-        margin: theme.spacing[2],
+        margin: theme.spacing.sm,
       },
       medium: {
-        margin: theme.spacing[4],
+        margin: theme.spacing.lg,
       },
       large: {
-        margin: theme.spacing[6],
+        margin: theme.spacing.xl,
       },
     };
 

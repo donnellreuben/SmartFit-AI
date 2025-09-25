@@ -66,13 +66,13 @@ export const useUserStore = create<UserState & UserActions>()(
       updateProfile: (updates: Partial<UserProfile>) => {
         const { profile } = get();
         if (!profile) return;
-        
+
         const updatedProfile = {
           ...profile,
           ...updates,
           updatedAt: new Date().toISOString(),
         };
-        
+
         // Check if profile is complete
         const isComplete = !!(
           updatedProfile.name &&
@@ -84,7 +84,7 @@ export const useUserStore = create<UserState & UserActions>()(
           updatedProfile.goals &&
           updatedProfile.goals.length > 0
         );
-        
+
         set({
           profile: updatedProfile,
           isProfileComplete: isComplete,
@@ -94,12 +94,27 @@ export const useUserStore = create<UserState & UserActions>()(
       setPreferences: (preferences: Partial<UserPreferences>) => {
         const { profile } = get();
         if (!profile) return;
-        
-        const updatedPreferences = {
+
+        const updatedPreferences: UserPreferences = {
+          notifications: {
+            workoutReminders: true,
+            progressUpdates: true,
+            motivationalMessages: true,
+            weeklyReports: true,
+          },
+          workout: {
+            intensity: 'medium',
+            musicIntegration: false,
+            voiceCoaching: false,
+          },
+          privacy: {
+            shareProgress: false,
+            anonymousAnalytics: true,
+          },
           ...profile.preferences,
           ...preferences,
         };
-        
+
         set({
           profile: {
             ...profile,
@@ -112,19 +127,20 @@ export const useUserStore = create<UserState & UserActions>()(
       setLoading: (loading: boolean) => set({ isLoading: loading }),
       setError: (error: string | null) => set({ error }),
       clearError: () => set({ error: null }),
-      
-      resetProfile: () => set({
-        profile: null,
-        isProfileComplete: false,
-        error: null,
-      }),
+
+      resetProfile: () =>
+        set({
+          profile: null,
+          isProfileComplete: false,
+          error: null,
+        }),
     }),
     {
       name: 'user-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         profile: state.profile,
         isProfileComplete: state.isProfileComplete,
       }),
-    }
-  )
+    },
+  ),
 );

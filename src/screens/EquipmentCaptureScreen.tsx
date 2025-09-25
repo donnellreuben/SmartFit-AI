@@ -16,17 +16,24 @@ import CameraComponent from '../components/CameraComponent';
 import { aiService, EquipmentDetection } from '../services/aiService';
 import { theme } from '../constants/theme';
 
-type EquipmentCaptureScreenNavigationProp = StackNavigationProp<RootStackParamList, 'EquipmentCapture'>;
+type EquipmentCaptureScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'EquipmentCapture'
+>;
 
 interface EquipmentCaptureScreenProps {
   navigation: EquipmentCaptureScreenNavigationProp;
 }
 
-const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigation }) => {
+const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({
+  navigation,
+}) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [capturedImages, setCapturedImages] = useState<string[]>([]);
   const [showCamera, setShowCamera] = useState(false);
-  const [detectedEquipment, setDetectedEquipment] = useState<EquipmentDetection[]>([]);
+  const [detectedEquipment, setDetectedEquipment] = useState<
+    EquipmentDetection[]
+  >([]);
   const [_analysisResults, _setAnalysisResults] = useState<any>(null);
 
   const handleTakePhoto = () => {
@@ -44,28 +51,41 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
 
   const handleAnalyzeEquipment = async () => {
     if (capturedImages.length === 0) {
-      Alert.alert('No Images', 'Please take at least one photo of your equipment');
+      Alert.alert(
+        'No Images',
+        'Please take at least one photo of your equipment',
+      );
       return;
     }
 
     setIsAnalyzing(true);
-    
+
     try {
       // Call AI service to analyze equipment
       const results = await aiService.analyzeEquipment(capturedImages);
-      setAnalysisResults(results);
+      _setAnalysisResults(results);
       setDetectedEquipment(results.detectedEquipment);
-      
+
       Alert.alert(
         'Analysis Complete!',
-        `Found ${results.detectedEquipment.length} pieces of equipment with ${Math.round(results.totalConfidence * 100)}% confidence.`,
+        `Found ${
+          results.detectedEquipment.length
+        } pieces of equipment with ${Math.round(
+          results.totalConfidence * 100,
+        )}% confidence.`,
         [
           { text: 'View Results', onPress: () => {} },
-          { text: 'Continue', onPress: () => navigation.navigate('WorkoutPlan') }
-        ]
+          {
+            text: 'Continue',
+            onPress: () => navigation.navigate('WorkoutPlan'),
+          },
+        ],
       );
     } catch (error) {
-      Alert.alert('Analysis Failed', 'Could not analyze equipment. Please try again.');
+      Alert.alert(
+        'Analysis Failed',
+        'Could not analyze equipment. Please try again.',
+      );
     } finally {
       setIsAnalyzing(false);
     }
@@ -80,12 +100,16 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
       <View style={styles.content}>
         <Text style={styles.title}>Equipment Setup</Text>
         <Text style={styles.subtitle}>
-          Take photos of your available equipment so we can create the perfect workout plan
+          Take photos of your available equipment so we can create the perfect
+          workout plan
         </Text>
 
         {/* Camera Button */}
         <View style={styles.cameraSection}>
-          <TouchableOpacity style={styles.cameraButton} onPress={handleTakePhoto}>
+          <TouchableOpacity
+            style={styles.cameraButton}
+            onPress={handleTakePhoto}
+          >
             <View style={styles.cameraIcon}>
               <Text style={styles.cameraIconText}>📷</Text>
             </View>
@@ -99,14 +123,16 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
         {/* Captured Images */}
         {capturedImages.length > 0 && (
           <View style={styles.imagesSection}>
-            <Text style={styles.imagesTitle}>Captured Equipment ({capturedImages.length})</Text>
+            <Text style={styles.imagesTitle}>
+              Captured Equipment ({capturedImages.length})
+            </Text>
             <View style={styles.imagesGrid}>
               {capturedImages.map((image, index) => (
                 <SmartFitCard key={index} style={styles.imageCard}>
                   <View style={styles.imagePlaceholder}>
                     <Text style={styles.imagePlaceholderText}>📸</Text>
                   </View>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.removeButton}
                     onPress={() => removeImage(index)}
                   >
@@ -138,7 +164,9 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
               <SmartFitCard key={equipment.id} style={styles.equipmentCard}>
                 <View style={styles.equipmentInfo}>
                   <Text style={styles.equipmentName}>{equipment.name}</Text>
-                  <Text style={styles.equipmentCategory}>{equipment.category}</Text>
+                  <Text style={styles.equipmentCategory}>
+                    {equipment.category}
+                  </Text>
                   <View style={styles.confidenceContainer}>
                     <Text style={styles.confidenceLabel}>Confidence:</Text>
                     <Text style={styles.confidenceValue}>
@@ -160,7 +188,7 @@ const EquipmentCaptureScreen: React.FC<EquipmentCaptureScreenProps> = ({ navigat
               style={styles.analyzeButton}
             />
           )}
-          
+
           {!isAnalyzing && (
             <SmartFitButton
               title="Skip for Now"
@@ -196,29 +224,29 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[4],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
   },
   title: {
     ...theme.typography.h1,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: theme.spacing[8],
+    marginBottom: theme.spacing.xxl,
     lineHeight: 24,
   },
   cameraSection: {
     alignItems: 'center',
-    marginBottom: theme.spacing[8],
+    marginBottom: theme.spacing.xxl,
   },
   cameraButton: {
     alignItems: 'center',
-    padding: theme.spacing[6],
+    padding: theme.spacing.xl,
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.large,
     borderWidth: 2,
@@ -233,7 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.accent,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   cameraIconText: {
     fontSize: 32,
@@ -241,24 +269,24 @@ const styles = StyleSheet.create({
   cameraButtonText: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   cameraButtonSubtext: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
   },
   imagesSection: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   imagesTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   imagesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   imageCard: {
     width: 80,
@@ -292,7 +320,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   analysisSection: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   progressContainer: {
     alignItems: 'center',
@@ -303,7 +331,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   progressFill: {
     height: '100%',
@@ -316,24 +344,24 @@ const styles = StyleSheet.create({
     color: theme.colors.textSecondary,
   },
   buttonSection: {
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   analyzeButton: {
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   skipButton: {
     // Additional styles if needed
   },
   detectedEquipmentSection: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   sectionTitle: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   equipmentCard: {
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   equipmentInfo: {
     flex: 1,
@@ -341,17 +369,17 @@ const styles = StyleSheet.create({
   equipmentName: {
     ...theme.typography.h3,
     color: theme.colors.text,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   equipmentCategory: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   confidenceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: theme.spacing[2],
+    gap: theme.spacing.sm,
   },
   confidenceLabel: {
     ...theme.typography.caption,

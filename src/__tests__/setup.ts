@@ -71,7 +71,7 @@ jest.mock('react-native/Libraries/Utilities/Dimensions', () => ({
 }));
 
 // Global test setup
-global.console = {
+(global as any).console = {
   ...console,
   // Suppress console.log in tests unless explicitly needed
   log: jest.fn(),

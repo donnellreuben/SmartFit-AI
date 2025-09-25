@@ -103,7 +103,10 @@ class SecurityService {
 
   private async saveSecurityConfig() {
     try {
-      await AsyncStorage.setItem('security_config', JSON.stringify(this.config));
+      await AsyncStorage.setItem(
+        'security_config',
+        JSON.stringify(this.config),
+      );
     } catch (error) {
       console.error('Failed to save security config:', error);
     }
@@ -136,7 +139,10 @@ class SecurityService {
 
   private async saveAuditLog() {
     try {
-      await AsyncStorage.setItem('security_audit_log', JSON.stringify(this.auditLog));
+      await AsyncStorage.setItem(
+        'security_audit_log',
+        JSON.stringify(this.auditLog),
+      );
     } catch (error) {
       console.error('Failed to save audit log:', error);
     }
@@ -146,17 +152,27 @@ class SecurityService {
   async enableBiometricAuth(): Promise<boolean> {
     try {
       if (!this.biometricAuth.isAvailable) {
-        throw new Error('Biometric authentication not available on this device');
+        throw new Error(
+          'Biometric authentication not available on this device',
+        );
       }
 
       // In a real app, you'd use react-native-biometrics
       // For now, simulate enabling biometric auth
       this.biometricAuth.isEnabled = true;
-      await this.logSecurityEvent('biometric_auth_enabled', true, 'Biometric authentication enabled');
+      await this.logSecurityEvent(
+        'biometric_auth_enabled',
+        true,
+        'Biometric authentication enabled',
+      );
       return true;
     } catch (error) {
       console.error('Failed to enable biometric auth:', error);
-      await this.logSecurityEvent('biometric_auth_enabled', false, `Failed to enable biometric auth: ${error}`);
+      await this.logSecurityEvent(
+        'biometric_auth_enabled',
+        false,
+        `Failed to enable biometric auth: ${error}`,
+      );
       return false;
     }
   }
@@ -164,7 +180,11 @@ class SecurityService {
   async disableBiometricAuth(): Promise<boolean> {
     try {
       this.biometricAuth.isEnabled = false;
-      await this.logSecurityEvent('biometric_auth_disabled', true, 'Biometric authentication disabled');
+      await this.logSecurityEvent(
+        'biometric_auth_disabled',
+        true,
+        'Biometric authentication disabled',
+      );
       return true;
     } catch (error) {
       console.error('Failed to disable biometric auth:', error);
@@ -181,12 +201,20 @@ class SecurityService {
       // In a real app, you'd use react-native-biometrics
       // For now, simulate biometric authentication
       const success = Math.random() > 0.1; // 90% success rate for simulation
-      
-      await this.logSecurityEvent('biometric_auth_attempt', success, 'Biometric authentication attempt');
+
+      await this.logSecurityEvent(
+        'biometric_auth_attempt',
+        success,
+        'Biometric authentication attempt',
+      );
       return success;
     } catch (error) {
       console.error('Failed to authenticate with biometric:', error);
-      await this.logSecurityEvent('biometric_auth_attempt', false, `Biometric authentication failed: ${error}`);
+      await this.logSecurityEvent(
+        'biometric_auth_attempt',
+        false,
+        `Biometric authentication failed: ${error}`,
+      );
       return false;
     }
   }
@@ -204,7 +232,7 @@ class SecurityService {
 
       // In a real app, you'd use react-native-crypto-js or similar
       // For now, simulate encryption
-      const encrypted = btoa(data); // Base64 encoding as simulation
+      const encrypted = btoa(unescape(encodeURIComponent(data))); // Base64 encoding as simulation
       return encrypted;
     } catch (error) {
       console.error('Failed to encrypt data:', error);
@@ -220,7 +248,7 @@ class SecurityService {
 
       // In a real app, you'd use proper decryption
       // For now, simulate decryption
-      const decrypted = atob(encryptedData); // Base64 decoding as simulation
+      const decrypted = decodeURIComponent(escape(atob(encryptedData))); // Base64 decoding as simulation
       return decrypted;
     } catch (error) {
       console.error('Failed to decrypt data:', error);
@@ -313,7 +341,7 @@ class SecurityService {
   async getSecureHeaders(): Promise<{ [key: string]: string }> {
     return {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + await this.getAuthToken(),
+      Authorization: 'Bearer ' + (await this.getAuthToken()),
       'X-Requested-With': 'XMLHttpRequest',
       'X-Client-Version': '1.0.0',
       'X-Platform': Platform.OS,
@@ -330,7 +358,11 @@ class SecurityService {
     try {
       this.config.enablePrivacyMode = true;
       await this.saveSecurityConfig();
-      await this.logSecurityEvent('privacy_mode_enabled', true, 'Privacy mode enabled');
+      await this.logSecurityEvent(
+        'privacy_mode_enabled',
+        true,
+        'Privacy mode enabled',
+      );
     } catch (error) {
       console.error('Failed to enable privacy mode:', error);
     }
@@ -340,7 +372,11 @@ class SecurityService {
     try {
       this.config.enablePrivacyMode = false;
       await this.saveSecurityConfig();
-      await this.logSecurityEvent('privacy_mode_disabled', true, 'Privacy mode disabled');
+      await this.logSecurityEvent(
+        'privacy_mode_disabled',
+        true,
+        'Privacy mode disabled',
+      );
     } catch (error) {
       console.error('Failed to disable privacy mode:', error);
     }
@@ -353,7 +389,9 @@ class SecurityService {
   // MARK: - Session Management
   async startSecureSession(): Promise<string> {
     try {
-      const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const sessionId = `session_${Date.now()}_${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
       const sessionData = {
         id: sessionId,
         startTime: new Date().toISOString(),
@@ -362,7 +400,11 @@ class SecurityService {
       };
 
       await this.storeSecurely('current_session', sessionData);
-      await this.logSecurityEvent('session_started', true, `Session started: ${sessionId}`);
+      await this.logSecurityEvent(
+        'session_started',
+        true,
+        `Session started: ${sessionId}`,
+      );
       return sessionId;
     } catch (error) {
       console.error('Failed to start secure session:', error);
@@ -389,7 +431,11 @@ class SecurityService {
         sessionData.isActive = false;
         sessionData.endTime = new Date().toISOString();
         await this.storeSecurely('current_session', sessionData);
-        await this.logSecurityEvent('session_ended', true, `Session ended: ${sessionData.id}`);
+        await this.logSecurityEvent(
+          'session_ended',
+          true,
+          `Session ended: ${sessionData.id}`,
+        );
       }
     } catch (error) {
       console.error('Failed to end secure session:', error);
@@ -415,7 +461,11 @@ class SecurityService {
   }
 
   // MARK: - Audit Logging
-  async logSecurityEvent(action: string, success: boolean, details: string): Promise<void> {
+  async logSecurityEvent(
+    action: string,
+    success: boolean,
+    details: string,
+  ): Promise<void> {
     try {
       if (!this.config.enableAuditLogging) return;
 
@@ -430,7 +480,7 @@ class SecurityService {
       };
 
       this.auditLog.push(auditEntry);
-      
+
       // Keep only last 1000 entries
       if (this.auditLog.length > 1000) {
         this.auditLog = this.auditLog.slice(-1000);
@@ -530,11 +580,15 @@ class SecurityService {
     const recommendations: string[] = [];
 
     if (!this.biometricAuth.isEnabled) {
-      recommendations.push('Enable biometric authentication for better security');
+      recommendations.push(
+        'Enable biometric authentication for better security',
+      );
     }
 
     if (!this.config.enableDataEncryption) {
-      recommendations.push('Enable data encryption to protect sensitive information');
+      recommendations.push(
+        'Enable data encryption to protect sensitive information',
+      );
     }
 
     if (!this.config.enableAuditLogging) {
@@ -542,7 +596,9 @@ class SecurityService {
     }
 
     if (this.config.sessionTimeout > 60) {
-      recommendations.push('Consider reducing session timeout for better security');
+      recommendations.push(
+        'Consider reducing session timeout for better security',
+      );
     }
 
     return recommendations;

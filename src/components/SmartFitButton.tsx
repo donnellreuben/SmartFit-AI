@@ -40,18 +40,18 @@ export const SmartFitButton: React.FC<SmartFitButtonProps> = ({
     // Size styles
     const sizeStyles: Record<string, ViewStyle> = {
       small: {
-        paddingHorizontal: theme.spacing[3],
-        paddingVertical: theme.spacing[2],
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.sm,
         minHeight: 36,
       },
       medium: {
-        paddingHorizontal: theme.spacing[4],
-        paddingVertical: theme.spacing[3],
+        paddingHorizontal: theme.spacing.lg,
+        paddingVertical: theme.spacing.md,
         minHeight: 48,
       },
       large: {
-        paddingHorizontal: theme.spacing[5],
-        paddingVertical: theme.spacing[4],
+        paddingHorizontal: theme.spacing.xl,
+        paddingVertical: theme.spacing.lg,
         minHeight: 56,
       },
     };
@@ -127,8 +127,10 @@ export const SmartFitButton: React.FC<SmartFitButtonProps> = ({
       {loading && (
         <ActivityIndicator
           size="small"
-          color={variant === 'outline' ? theme.colors.accent : theme.colors.text}
-          style={{ marginRight: theme.spacing[2] }}
+          color={
+            variant === 'outline' ? theme.colors.accent : theme.colors.text
+          }
+          style={{ marginRight: theme.spacing.sm }}
         />
       )}
       <Text style={[getTextStyle(), textStyle]}>{title}</Text>

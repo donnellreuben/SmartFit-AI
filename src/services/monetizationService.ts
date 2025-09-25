@@ -100,7 +100,9 @@ class MonetizationService {
         this.inAppPurchases = JSON.parse(inAppPurchasesData);
       }
 
-      const strategiesData = await AsyncStorage.getItem('monetization_strategies');
+      const strategiesData = await AsyncStorage.getItem(
+        'monetization_strategies',
+      );
       if (strategiesData) {
         this.strategies = JSON.parse(strategiesData);
       }
@@ -111,10 +113,19 @@ class MonetizationService {
 
   private async saveMonetizationData() {
     try {
-      await AsyncStorage.setItem('monetization_features', JSON.stringify(this.features));
+      await AsyncStorage.setItem(
+        'monetization_features',
+        JSON.stringify(this.features),
+      );
       await AsyncStorage.setItem('ad_configs', JSON.stringify(this.adConfigs));
-      await AsyncStorage.setItem('in_app_purchases', JSON.stringify(this.inAppPurchases));
-      await AsyncStorage.setItem('monetization_strategies', JSON.stringify(this.strategies));
+      await AsyncStorage.setItem(
+        'in_app_purchases',
+        JSON.stringify(this.inAppPurchases),
+      );
+      await AsyncStorage.setItem(
+        'monetization_strategies',
+        JSON.stringify(this.strategies),
+      );
     } catch (error) {
       console.error('Failed to save monetization data:', error);
     }
@@ -404,13 +415,12 @@ class MonetizationService {
 
   private async trackFeatureUsage(feature: MonetizationFeature): Promise<void> {
     try {
-      await analyticsService.trackEvent('feature_usage', {
-        feature_id: feature.id,
-        feature_name: feature.name,
-        category: feature.category,
-        is_premium: feature.isPremium,
-        usage_count: feature.usageCount,
-      });
+      await analyticsService.trackEvent(
+        'feature_usage',
+        'monetization',
+        'feature_used',
+        feature.name,
+      );
     } catch (error) {
       console.error('Failed to track feature usage:', error);
     }
@@ -422,7 +432,9 @@ class MonetizationService {
   }
 
   getAdConfigByType(adType: string): AdConfig | undefined {
-    return this.adConfigs.find(config => config.adType === adType && config.isEnabled);
+    return this.adConfigs.find(
+      config => config.adType === adType && config.isEnabled,
+    );
   }
 
   async showAd(adType: string): Promise<boolean> {
@@ -433,12 +445,12 @@ class MonetizationService {
       // In a real app, you'd integrate with ad SDK
       // For now, simulate ad display
       const shouldShow = Math.random() > 0.3; // 70% chance to show
-      
+
       if (shouldShow) {
         await this.trackAdImpression(adType);
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('Failed to show ad:', error);
@@ -448,10 +460,12 @@ class MonetizationService {
 
   private async trackAdImpression(adType: string): Promise<void> {
     try {
-      await analyticsService.trackEvent('ad_impression', {
-        ad_type: adType,
-        timestamp: new Date().toISOString(),
-      });
+      await analyticsService.trackEvent(
+        'ad_impression',
+        'monetization',
+        'ad_shown',
+        adType,
+      );
     } catch (error) {
       console.error('Failed to track ad impression:', error);
     }
@@ -474,17 +488,17 @@ class MonetizationService {
       // In a real app, you'd integrate with App Store/Play Store
       // For now, simulate purchase
       const success = Math.random() > 0.1; // 90% success rate
-      
+
       if (success) {
         purchase.purchaseCount++;
         purchase.revenue += purchase.price;
-        
+
         await this.saveMonetizationData();
         await this.trackPurchase(purchase);
-        
+
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('Failed to process in-app purchase:', error);
@@ -494,15 +508,12 @@ class MonetizationService {
 
   private async trackPurchase(purchase: InAppPurchase): Promise<void> {
     try {
-      await analyticsService.trackEvent('in_app_purchase', {
-        purchase_id: purchase.id,
-        purchase_name: purchase.name,
-        price: purchase.price,
-        currency: purchase.currency,
-        category: purchase.category,
-        purchase_count: purchase.purchaseCount,
-        revenue: purchase.revenue,
-      });
+      await analyticsService.trackEvent(
+        'in_app_purchase',
+        'monetization',
+        'purchase_made',
+        purchase.name,
+      );
     } catch (error) {
       console.error('Failed to track purchase:', error);
     }
@@ -517,7 +528,10 @@ class MonetizationService {
     return this.strategies.find(strategy => strategy.id === id);
   }
 
-  async updateStrategyStatus(strategyId: string, status: string): Promise<void> {
+  async updateStrategyStatus(
+    strategyId: string,
+    status: string,
+  ): Promise<void> {
     try {
       const strategy = this.getStrategyById(strategyId);
       if (strategy) {
@@ -530,14 +544,16 @@ class MonetizationService {
     }
   }
 
-  private async trackStrategyUpdate(strategy: MonetizationStrategy): Promise<void> {
+  private async trackStrategyUpdate(
+    strategy: MonetizationStrategy,
+  ): Promise<void> {
     try {
-      await analyticsService.trackEvent('strategy_update', {
-        strategy_id: strategy.id,
-        strategy_name: strategy.name,
-        status: strategy.status,
-        priority: strategy.priority,
-      });
+      await analyticsService.trackEvent(
+        'strategy_update',
+        'monetization',
+        'strategy_updated',
+        strategy.name,
+      );
     } catch (error) {
       console.error('Failed to track strategy update:', error);
     }
@@ -555,24 +571,26 @@ class MonetizationService {
     try {
       const subscriptionStatus = subscriptionService.getSubscriptionStatus();
       const subscriptionRevenue = subscriptionStatus.isActive ? 50 : 0; // Mock revenue
-      
+
       const inAppPurchaseRevenue = this.inAppPurchases.reduce(
-        (total, purchase) => total + purchase.revenue, 0
+        (total, purchase) => total + purchase.revenue,
+        0,
       );
-      
+
       const adRevenue = 1000; // Mock ad revenue
-      const totalRevenue = subscriptionRevenue + inAppPurchaseRevenue + adRevenue;
-      
+      const totalRevenue =
+        subscriptionRevenue + inAppPurchaseRevenue + adRevenue;
+
       const revenueByFeature: { [key: string]: number } = {};
       this.features.forEach(feature => {
         revenueByFeature[feature.id] = feature.revenue;
       });
-      
+
       const revenueByStrategy: { [key: string]: number } = {};
       this.strategies.forEach(strategy => {
         revenueByStrategy[strategy.id] = strategy.expectedRevenue;
       });
-      
+
       return {
         totalRevenue,
         subscriptionRevenue,
@@ -598,29 +616,29 @@ class MonetizationService {
   async createMonetizationABTest(
     testName: string,
     variants: { [key: string]: any },
-    targetMetric: string
+    targetMetric: string,
   ): Promise<string> {
     try {
       const testId = await analyticsService.createABTest({
         name: testName,
         description: `Monetization A/B test: ${testName}`,
-        variants: Object.keys(variants).map(key => ({
-          name: key,
-          config: variants[key],
-        })),
-        targetMetric,
+        variants: {
+          control: 'control',
+          test: 'test',
+        },
+        metrics: [targetMetric],
+        trafficAllocation: 50,
         startDate: new Date().toISOString(),
         endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-        status: 'active',
       });
-      
-      await analyticsService.trackEvent('monetization_ab_test_created', {
-        test_id: testId,
-        test_name: testName,
-        target_metric: targetMetric,
-        variants: Object.keys(variants),
-      });
-      
+
+      await analyticsService.trackEvent(
+        'monetization_ab_test_created',
+        'monetization',
+        'ab_test_created',
+        testName,
+      );
+
       return testId;
     } catch (error) {
       console.error('Failed to create monetization A/B test:', error);
@@ -631,11 +649,12 @@ class MonetizationService {
   // MARK: - User Acquisition
   async trackUserAcquisition(source: string, campaign: string): Promise<void> {
     try {
-      await analyticsService.trackEvent('user_acquisition', {
-        source,
+      await analyticsService.trackEvent(
+        'user_acquisition',
+        'monetization',
+        'user_acquired',
         campaign,
-        timestamp: new Date().toISOString(),
-      });
+      );
     } catch (error) {
       console.error('Failed to track user acquisition:', error);
     }
@@ -643,11 +662,12 @@ class MonetizationService {
 
   async trackConversion(event: string, value: number): Promise<void> {
     try {
-      await analyticsService.trackEvent('conversion', {
-        event,
-        value,
-        timestamp: new Date().toISOString(),
-      });
+      await analyticsService.trackEvent(
+        'conversion',
+        'monetization',
+        'conversion_tracked',
+        value.toString(),
+      );
     } catch (error) {
       console.error('Failed to track conversion:', error);
     }

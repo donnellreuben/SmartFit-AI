@@ -13,13 +13,18 @@ import { SmartFitButton } from '../components/SmartFitButton';
 import { SmartFitInput } from '../components/SmartFitInput';
 import { theme } from '../constants/theme';
 
-type ProfileSetupScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProfileSetup'>;
+type ProfileSetupScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'ProfileSetup'
+>;
 
 interface ProfileSetupScreenProps {
   navigation: ProfileSetupScreenNavigationProp;
 }
 
-const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ navigation }) => {
+const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({
+  navigation,
+}) => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,13 +38,18 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ navigation }) =
     const heightNum = parseFloat(height);
     const weightNum = parseFloat(weight);
 
-    if (isNaN(heightNum) || isNaN(weightNum) || heightNum <= 0 || weightNum <= 0) {
+    if (
+      isNaN(heightNum) ||
+      isNaN(weightNum) ||
+      heightNum <= 0 ||
+      weightNum <= 0
+    ) {
       Alert.alert('Error', 'Please enter valid numbers');
       return;
     }
 
     setLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
@@ -49,7 +59,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ navigation }) =
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
@@ -80,7 +90,8 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ navigation }) =
 
             <View style={styles.infoContainer}>
               <Text style={styles.infoText}>
-                This information helps us calculate your BMI and create personalized workout recommendations.
+                This information helps us calculate your BMI and create
+                personalized workout recommendations.
               </Text>
             </View>
 
@@ -107,29 +118,29 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[8],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.xxl,
   },
   title: {
     ...theme.typography.h1,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: theme.spacing[8],
+    marginBottom: theme.spacing.xxl,
   },
   form: {
     flex: 1,
   },
   infoContainer: {
     backgroundColor: theme.colors.surface,
-    padding: theme.spacing[4],
+    padding: theme.spacing.lg,
     borderRadius: theme.borderRadius.medium,
-    marginVertical: theme.spacing[4],
+    marginVertical: theme.spacing.lg,
   },
   infoText: {
     ...theme.typography.caption,
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   saveButton: {
-    marginTop: theme.spacing[4],
+    marginTop: theme.spacing.lg,
   },
 });
 

@@ -33,9 +33,15 @@ export const RestTimer: React.FC<RestTimerProps> = ({
   const [timeRemaining, setTimeRemaining] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
-  
-  const timerRef = useRef<NodeJS.Timeout>();
-  // const intervalRef = useRef<NodeJS.Timeout>();
+
+  const timerRef = useRef<number | undefined>(undefined);
+  // const intervalRef = useRef<ReturnType<typeof setInterval>>();
+
+  const handleComplete = useCallback(() => {
+    setIsCompleted(true);
+    Vibration.vibrate([0, 500, 200, 500, 200, 500]); // Completion vibration pattern
+    onComplete();
+  }, [onComplete]);
 
   useEffect(() => {
     if (!isPaused && timeRemaining > 0) {
@@ -64,29 +70,22 @@ export const RestTimer: React.FC<RestTimerProps> = ({
     }
   }, [timeRemaining]);
 
-  const handleComplete = useCallback(() => {
-    setIsCompleted(true);
-    Vibration.vibrate([0, 500, 200, 500, 200, 500]); // Completion vibration pattern
-    onComplete();
-  }, [onComplete]);
-
   const handlePause = () => {
     setIsPaused(!isPaused);
     Vibration.vibrate([0, 100]); // Pause vibration
   };
 
   const handleSkip = () => {
-    Alert.alert(
-      'Skip Rest',
-      'Are you sure you want to skip the rest period?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Skip', onPress: () => {
+    Alert.alert('Skip Rest', 'Are you sure you want to skip the rest period?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Skip',
+        onPress: () => {
           if (onSkip) onSkip();
           handleComplete();
-        }}
-      ]
-    );
+        },
+      },
+    ]);
   };
 
   const handleExtend = () => {
@@ -116,7 +115,7 @@ export const RestTimer: React.FC<RestTimerProps> = ({
   };
 
   return (
-    <SmartFitCard style={[styles.container, style]}>
+    <SmartFitCard style={StyleSheet.flatten([styles.container, style])}>
       <View style={styles.header}>
         <Text style={styles.title}>Rest Time</Text>
         {exerciseName && (
@@ -129,17 +128,17 @@ export const RestTimer: React.FC<RestTimerProps> = ({
         <Text style={[styles.timerText, { color: getTimeColor() }]}>
           {formatTime(timeRemaining)}
         </Text>
-        
+
         {!isCompleted && (
           <View style={styles.progressContainer}>
             <View style={styles.progressBar}>
-              <View 
+              <View
                 style={[
-                  styles.progressFill, 
-                  { 
+                  styles.progressFill,
+                  {
                     width: `${getProgressPercentage()}%`,
-                    backgroundColor: getTimeColor()
-                  }
+                    backgroundColor: getTimeColor(),
+                  },
                 ]}
               />
             </View>
@@ -150,9 +149,7 @@ export const RestTimer: React.FC<RestTimerProps> = ({
           <View style={styles.completedContainer}>
             <Text style={styles.completedText}>✅ Rest Complete!</Text>
             {nextExercise && (
-              <Text style={styles.nextExerciseText}>
-                Next: {nextExercise}
-              </Text>
+              <Text style={styles.nextExerciseText}>Next: {nextExercise}</Text>
             )}
           </View>
         )}
@@ -162,7 +159,10 @@ export const RestTimer: React.FC<RestTimerProps> = ({
       {!isCompleted && (
         <View style={styles.controls}>
           <TouchableOpacity
-            style={[styles.controlButton, isPaused ? styles.pausedButton : styles.activeButton]}
+            style={[
+              styles.controlButton,
+              isPaused ? styles.pausedButton : styles.activeButton,
+            ]}
             onPress={handlePause}
           >
             <Text style={styles.controlButtonText}>
@@ -173,18 +173,12 @@ export const RestTimer: React.FC<RestTimerProps> = ({
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.controlButton}
-            onPress={handleSkip}
-          >
+          <TouchableOpacity style={styles.controlButton} onPress={handleSkip}>
             <Text style={styles.controlButtonText}>⏭️</Text>
             <Text style={styles.controlButtonLabel}>Skip</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.controlButton}
-            onPress={handleExtend}
-          >
+          <TouchableOpacity style={styles.controlButton} onPress={handleExtend}>
             <Text style={styles.controlButtonText}>⏰</Text>
             <Text style={styles.controlButtonLabel}>+30s</Text>
           </TouchableOpacity>
@@ -217,16 +211,16 @@ export const RestTimer: React.FC<RestTimerProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.accent,
-    marginVertical: theme.spacing[4],
+    marginVertical: theme.spacing.lg,
   },
   header: {
     alignItems: 'center',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   title: {
     ...theme.typography.h2,
     color: theme.colors.text,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   exerciseName: {
     ...theme.typography.body,
@@ -235,13 +229,13 @@ const styles = StyleSheet.create({
   },
   timerContainer: {
     alignItems: 'center',
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   timerText: {
     ...theme.typography.h1,
     fontSize: 48,
     fontWeight: 'bold',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   progressContainer: {
     width: '100%',
@@ -264,7 +258,7 @@ const styles = StyleSheet.create({
   completedText: {
     ...theme.typography.h2,
     color: theme.colors.text,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   nextExerciseText: {
     ...theme.typography.body,
@@ -274,12 +268,12 @@ const styles = StyleSheet.create({
   controls: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   controlButton: {
     alignItems: 'center',
-    paddingVertical: theme.spacing[2],
-    paddingHorizontal: theme.spacing[3],
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.medium,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     minWidth: 80,
@@ -292,7 +286,7 @@ const styles = StyleSheet.create({
   },
   controlButtonText: {
     fontSize: 24,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   controlButtonLabel: {
     ...theme.typography.caption,
@@ -301,7 +295,7 @@ const styles = StyleSheet.create({
   },
   quickActions: {
     flexDirection: 'row',
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
     justifyContent: 'center',
   },
   skipButton: {

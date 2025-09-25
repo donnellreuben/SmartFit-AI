@@ -15,7 +15,10 @@ import { SmartFitCard } from '../components/SmartFitCard';
 import { ProgressChart } from '../components/ProgressChart';
 import { theme } from '../constants/theme';
 
-type ProgressTrackingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProgressTracking'>;
+type ProgressTrackingScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'ProgressTracking'
+>;
 
 interface ProgressTrackingScreenProps {
   navigation: ProgressTrackingScreenNavigationProp;
@@ -29,7 +32,7 @@ const mockWorkoutHistory = [
     duration: 45,
     exercises: 4,
     calories: 320,
-    notes: 'Great workout, felt strong today'
+    notes: 'Great workout, felt strong today',
   },
   {
     id: '2',
@@ -37,7 +40,7 @@ const mockWorkoutHistory = [
     duration: 38,
     exercises: 3,
     calories: 280,
-    notes: 'Focused on upper body'
+    notes: 'Focused on upper body',
   },
   {
     id: '3',
@@ -45,7 +48,7 @@ const mockWorkoutHistory = [
     duration: 52,
     exercises: 5,
     calories: 380,
-    notes: 'Leg day, really pushed myself'
+    notes: 'Leg day, really pushed myself',
   },
   {
     id: '4',
@@ -53,8 +56,8 @@ const mockWorkoutHistory = [
     duration: 41,
     exercises: 4,
     calories: 295,
-    notes: 'Quick morning session'
-  }
+    notes: 'Quick morning session',
+  },
 ];
 
 const mockWeightProgression = [
@@ -63,19 +66,29 @@ const mockWeightProgression = [
   { date: '2024-01-15', weight: 80.0, exercise: 'Bench Press' },
 ];
 
-const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigation: _navigation }) => {
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'year'>('month');
+const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({
+  navigation: _navigation,
+}) => {
+  const [selectedTimeframe, setSelectedTimeframe] = useState<
+    'week' | 'month' | 'year'
+  >('month');
 
   const getTotalWorkouts = () => {
     return mockWorkoutHistory.length;
   };
 
   const getTotalDuration = () => {
-    return mockWorkoutHistory.reduce((acc, workout) => acc + workout.duration, 0);
+    return mockWorkoutHistory.reduce(
+      (acc, workout) => acc + workout.duration,
+      0,
+    );
   };
 
   const getTotalCalories = () => {
-    return mockWorkoutHistory.reduce((acc, workout) => acc + workout.calories, 0);
+    return mockWorkoutHistory.reduce(
+      (acc, workout) => acc + workout.calories,
+      0,
+    );
   };
 
   // const getAverageWorkoutDuration = () => {
@@ -84,10 +97,10 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
@@ -98,7 +111,10 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
@@ -110,19 +126,23 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
 
           {/* Timeframe Selector */}
           <View style={styles.timeframeSelector}>
-            {(['week', 'month', 'year'] as const).map((timeframe) => (
+            {(['week', 'month', 'year'] as const).map(timeframe => (
               <TouchableOpacity
                 key={timeframe}
                 style={[
                   styles.timeframeButton,
-                  selectedTimeframe === timeframe && styles.timeframeButtonActive
+                  selectedTimeframe === timeframe &&
+                    styles.timeframeButtonActive,
                 ]}
                 onPress={() => setSelectedTimeframe(timeframe)}
               >
-                <Text style={[
-                  styles.timeframeButtonText,
-                  selectedTimeframe === timeframe && styles.timeframeButtonTextActive
-                ]}>
+                <Text
+                  style={[
+                    styles.timeframeButtonText,
+                    selectedTimeframe === timeframe &&
+                      styles.timeframeButtonTextActive,
+                  ]}
+                >
                   {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)}
                 </Text>
               </TouchableOpacity>
@@ -135,17 +155,17 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
               <Text style={styles.statValue}>{getTotalWorkouts()}</Text>
               <Text style={styles.statLabel}>Workouts</Text>
             </SmartFitCard>
-            
+
             <SmartFitCard style={styles.statCard}>
               <Text style={styles.statValue}>{getTotalDuration()}</Text>
               <Text style={styles.statLabel}>Minutes</Text>
             </SmartFitCard>
-            
+
             <SmartFitCard style={styles.statCard}>
               <Text style={styles.statValue}>{getTotalCalories()}</Text>
               <Text style={styles.statLabel}>Calories</Text>
             </SmartFitCard>
-            
+
             <SmartFitCard style={styles.statCard}>
               <Text style={styles.statValue}>{getStreakDays()}</Text>
               <Text style={styles.statLabel}>Day Streak</Text>
@@ -157,7 +177,7 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
             data={mockWeightProgression.map(entry => ({
               date: entry.date,
               value: entry.weight,
-              label: entry.exercise
+              label: entry.exercise,
             }))}
             title="Weight Progression"
             yAxisLabel="Weight (kg)"
@@ -170,24 +190,32 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
           {/* Recent Workouts */}
           <View style={styles.recentWorkoutsSection}>
             <Text style={styles.sectionTitle}>Recent Workouts</Text>
-            {mockWorkoutHistory.map((workout) => (
+            {mockWorkoutHistory.map(workout => (
               <SmartFitCard key={workout.id} style={styles.workoutCard}>
                 <View style={styles.workoutHeader}>
-                  <Text style={styles.workoutDate}>{formatDate(workout.date)}</Text>
-                  <Text style={styles.workoutDuration}>{workout.duration} min</Text>
+                  <Text style={styles.workoutDate}>
+                    {formatDate(workout.date)}
+                  </Text>
+                  <Text style={styles.workoutDuration}>
+                    {workout.duration} min
+                  </Text>
                 </View>
-                
+
                 <View style={styles.workoutStats}>
                   <View style={styles.workoutStat}>
-                    <Text style={styles.workoutStatValue}>{workout.exercises}</Text>
+                    <Text style={styles.workoutStatValue}>
+                      {workout.exercises}
+                    </Text>
                     <Text style={styles.workoutStatLabel}>Exercises</Text>
                   </View>
                   <View style={styles.workoutStat}>
-                    <Text style={styles.workoutStatValue}>{workout.calories}</Text>
+                    <Text style={styles.workoutStatValue}>
+                      {workout.calories}
+                    </Text>
                     <Text style={styles.workoutStatLabel}>Calories</Text>
                   </View>
                 </View>
-                
+
                 {workout.notes && (
                   <Text style={styles.workoutNotes}>{workout.notes}</Text>
                 )}
@@ -202,10 +230,12 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
               onPress={() => Alert.alert('Add Workout', 'Feature coming soon!')}
               style={styles.addWorkoutButton}
             />
-            
+
             <SmartFitButton
               title="View Detailed Analytics"
-              onPress={() => Alert.alert('Analytics', 'Detailed analytics coming soon!')}
+              onPress={() =>
+                Alert.alert('Analytics', 'Detailed analytics coming soon!')
+              }
               variant="outline"
               style={styles.analyticsButton}
             />
@@ -225,17 +255,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: theme.spacing[6],
-    paddingTop: theme.spacing[4],
-    paddingBottom: theme.spacing[8],
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.xxl,
   },
   header: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   title: {
     ...theme.typography.h1,
     color: theme.colors.text,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     ...theme.typography.body,
@@ -246,13 +276,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.medium,
-    padding: theme.spacing[1],
-    marginBottom: theme.spacing[6],
+    padding: theme.spacing.xs,
+    marginBottom: theme.spacing.xl,
   },
   timeframeButton: {
     flex: 1,
-    paddingVertical: theme.spacing[2],
-    paddingHorizontal: theme.spacing[3],
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.small,
     alignItems: 'center',
   },
@@ -270,43 +300,43 @@ const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing[3],
-    marginBottom: theme.spacing[6],
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.xl,
   },
   statCard: {
     flex: 1,
     minWidth: '45%',
     alignItems: 'center',
-    paddingVertical: theme.spacing[4],
+    paddingVertical: theme.spacing.lg,
   },
   statValue: {
     ...theme.typography.h1,
     color: theme.colors.accent,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   statLabel: {
     ...theme.typography.caption,
     color: theme.colors.textSecondary,
   },
   chartCard: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   recentWorkoutsSection: {
-    marginBottom: theme.spacing[6],
+    marginBottom: theme.spacing.xl,
   },
   sectionTitle: {
     ...theme.typography.h2,
     color: theme.colors.text,
-    marginBottom: theme.spacing[4],
+    marginBottom: theme.spacing.lg,
   },
   workoutCard: {
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   workoutHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing[3],
+    marginBottom: theme.spacing.md,
   },
   workoutDate: {
     ...theme.typography.h3,
@@ -318,8 +348,8 @@ const styles = StyleSheet.create({
   },
   workoutStats: {
     flexDirection: 'row',
-    gap: theme.spacing[6],
-    marginBottom: theme.spacing[2],
+    gap: theme.spacing.xl,
+    marginBottom: theme.spacing.sm,
   },
   workoutStat: {
     alignItems: 'center',
@@ -327,7 +357,7 @@ const styles = StyleSheet.create({
   workoutStatValue: {
     ...theme.typography.h3,
     color: theme.colors.accent,
-    marginBottom: theme.spacing[1],
+    marginBottom: theme.spacing.xs,
   },
   workoutStatLabel: {
     ...theme.typography.caption,
@@ -339,10 +369,10 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   buttonSection: {
-    gap: theme.spacing[3],
+    gap: theme.spacing.md,
   },
   addWorkoutButton: {
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing.sm,
   },
   analyticsButton: {
     // Additional styles if needed

@@ -13,31 +13,93 @@ export interface Theme {
     border: string;
     placeholder: string;
   };
-  spacing: number[];
+  spacing: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+    xxl: number;
+  };
   typography: {
     h1: {
       fontSize: number;
-      fontWeight: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+      fontWeight:
+        | 'normal'
+        | 'bold'
+        | '100'
+        | '200'
+        | '300'
+        | '400'
+        | '500'
+        | '600'
+        | '700'
+        | '800'
+        | '900';
       lineHeight: number;
     };
     h2: {
       fontSize: number;
-      fontWeight: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+      fontWeight:
+        | 'normal'
+        | 'bold'
+        | '100'
+        | '200'
+        | '300'
+        | '400'
+        | '500'
+        | '600'
+        | '700'
+        | '800'
+        | '900';
       lineHeight: number;
     };
     h3: {
       fontSize: number;
-      fontWeight: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+      fontWeight:
+        | 'normal'
+        | 'bold'
+        | '100'
+        | '200'
+        | '300'
+        | '400'
+        | '500'
+        | '600'
+        | '700'
+        | '800'
+        | '900';
       lineHeight: number;
     };
     body: {
       fontSize: number;
-      fontWeight: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+      fontWeight:
+        | 'normal'
+        | 'bold'
+        | '100'
+        | '200'
+        | '300'
+        | '400'
+        | '500'
+        | '600'
+        | '700'
+        | '800'
+        | '900';
       lineHeight: number;
     };
     caption: {
       fontSize: number;
-      fontWeight: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+      fontWeight:
+        | 'normal'
+        | 'bold'
+        | '100'
+        | '200'
+        | '300'
+        | '400'
+        | '500'
+        | '600'
+        | '700'
+        | '800'
+        | '900';
       lineHeight: number;
     };
   };
@@ -96,7 +158,14 @@ export const theme: Theme = {
     border: '#2A2A2A', // Border color
     placeholder: '#666666', // Placeholder text
   },
-  spacing: [4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96],
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 20,
+    xxl: 24,
+  },
   typography: {
     h1: {
       fontSize: 32,
