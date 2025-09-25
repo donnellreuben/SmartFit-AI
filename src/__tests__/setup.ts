@@ -44,6 +44,32 @@ jest.mock('react-native-permissions', () => ({
   },
 }));
 
+// Mock PixelRatio
+jest.mock('react-native/Libraries/Utilities/PixelRatio', () => ({
+  get: jest.fn(() => 2),
+  getFontScale: jest.fn(() => 1),
+  getPixelSizeForLayoutSize: jest.fn(size => size * 2),
+  roundToNearestPixel: jest.fn(size => Math.round(size)),
+}));
+
+// Mock StyleSheet
+jest.mock('react-native/Libraries/StyleSheet/StyleSheet', () => ({
+  create: jest.fn(styles => styles),
+  flatten: jest.fn(style => style),
+  absoluteFill: {},
+  absoluteFillObject: {},
+  hairlineWidth: 1,
+}));
+
+// Note: Removed complex React Native mocking to avoid conflicts
+
+// Mock Dimensions
+jest.mock('react-native/Libraries/Utilities/Dimensions', () => ({
+  get: jest.fn(() => ({ width: 375, height: 812, scale: 2, fontScale: 1 })),
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+}));
+
 // Global test setup
 global.console = {
   ...console,

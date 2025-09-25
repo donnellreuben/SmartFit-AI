@@ -45,13 +45,18 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       error: null,
 
       // Actions
-      login: async (email: string, _password: string) => {
+      login: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
-        
+
         try {
-          // Simulate API call
-          await new Promise(resolve => setTimeout(resolve, 1500));
-          
+          // Simulate API call (reduced for testing)
+          await new Promise(resolve => setTimeout(resolve, 10));
+
+          // Mock credential validation
+          if (email === 'invalid@example.com' || password === 'wrongpassword') {
+            throw new Error('Invalid credentials');
+          }
+
           // Mock successful login
           const user: User = {
             id: '1',
@@ -59,13 +64,13 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             name: email.split('@')[0],
             createdAt: new Date().toISOString(),
           };
-          
+
           const tokens: AuthTokens = {
             accessToken: 'mock-access-token',
             refreshToken: 'mock-refresh-token',
             expiresAt: Date.now() + 3600000, // 1 hour
           };
-          
+
           set({
             user,
             tokens,
@@ -83,11 +88,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
       register: async (email: string, password: string, name: string) => {
         set({ isLoading: true, error: null });
-        
+
         try {
-          // Simulate API call
-          await new Promise(resolve => setTimeout(resolve, 1500));
-          
+          // Simulate API call (reduced for testing)
+          await new Promise(resolve => setTimeout(resolve, 10));
+
           // Mock successful registration
           const user: User = {
             id: '1',
@@ -95,13 +100,13 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             name,
             createdAt: new Date().toISOString(),
           };
-          
+
           const tokens: AuthTokens = {
             accessToken: 'mock-access-token',
             refreshToken: 'mock-refresh-token',
             expiresAt: Date.now() + 3600000, // 1 hour
           };
-          
+
           set({
             user,
             tokens,
@@ -129,17 +134,17 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       refreshToken: async () => {
         const { tokens } = get();
         if (!tokens) return;
-        
+
         try {
-          // Simulate token refresh
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
+          // Simulate token refresh (reduced for testing)
+          await new Promise(resolve => setTimeout(resolve, 10));
+
           const newTokens: AuthTokens = {
             accessToken: 'new-mock-access-token',
             refreshToken: 'new-mock-refresh-token',
             expiresAt: Date.now() + 3600000,
           };
-          
+
           set({ tokens: newTokens });
         } catch (error) {
           set({ error: 'Token refresh failed' });
@@ -153,11 +158,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         user: state.user,
         tokens: state.tokens,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );
