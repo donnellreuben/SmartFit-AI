@@ -1,4 +1,10 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Run TypeScript type checking
+echo "🔍 Running TypeScript type checking..."
+npx tsc --noEmit
+
+# Run lint-staged for formatting and linting
+echo "🔧 Running lint-staged..."
 npx lint-staged
