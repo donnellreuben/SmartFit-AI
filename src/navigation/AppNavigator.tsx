@@ -3,12 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { theme } from '../constants/theme';
 
-// Import screens (we'll create these)
+// Import screens
 import WelcomeScreen from '../screens/WelcomeScreen';
 import AuthScreen from '../screens/AuthScreen';
 import ProfileSetupScreen from '../screens/ProfileSetupScreen';
 import EquipmentCaptureScreen from '../screens/EquipmentCaptureScreen';
 import WorkoutPlanScreen from '../screens/WorkoutPlanScreen';
+import ActiveWorkoutScreen from '../screens/ActiveWorkoutScreen';
+import WorkoutSummaryScreen from '../screens/WorkoutSummaryScreen';
 import ProgressTrackingScreen from '../screens/ProgressTrackingScreen';
 
 export type RootStackParamList = {
@@ -17,6 +19,8 @@ export type RootStackParamList = {
   ProfileSetup: undefined;
   EquipmentCapture: undefined;
   WorkoutPlan: undefined;
+  ActiveWorkout: undefined;
+  WorkoutSummary: undefined;
   ProgressTracking: undefined;
 };
 
@@ -68,6 +72,19 @@ const AppNavigator: React.FC = () => {
           name="WorkoutPlan" 
           component={WorkoutPlanScreen}
           options={{ title: 'Your Workout Plan' }}
+        />
+        <Stack.Screen 
+          name="ActiveWorkout" 
+          component={ActiveWorkoutScreen}
+          options={{ 
+            title: 'Active Workout',
+            headerShown: false // Full screen workout experience
+          }}
+        />
+        <Stack.Screen 
+          name="WorkoutSummary" 
+          component={WorkoutSummaryScreen}
+          options={{ title: 'Workout Complete' }}
         />
         <Stack.Screen 
           name="ProgressTracking" 

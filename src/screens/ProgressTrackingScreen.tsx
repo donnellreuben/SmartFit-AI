@@ -12,6 +12,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
 import { SmartFitCard } from '../components/SmartFitCard';
+import { ProgressChart } from '../components/ProgressChart';
 import { theme } from '../constants/theme';
 
 type ProgressTrackingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProgressTracking'>;
@@ -151,26 +152,20 @@ const ProgressTrackingScreen: React.FC<ProgressTrackingScreenProps> = ({ navigat
             </SmartFitCard>
           </View>
 
-          {/* Weight Progression Chart Placeholder */}
-          <SmartFitCard style={styles.chartCard}>
-            <Text style={styles.chartTitle}>Weight Progression</Text>
-            <View style={styles.chartPlaceholder}>
-              <Text style={styles.chartPlaceholderText}>
-                📈 Chart visualization would go here
-              </Text>
-              <Text style={styles.chartSubtext}>
-                Track your strength gains over time
-              </Text>
-            </View>
-            <View style={styles.chartData}>
-              {mockWeightProgression.map((entry, index) => (
-                <View key={index} style={styles.chartDataItem}>
-                  <Text style={styles.chartDataDate}>{formatDate(entry.date)}</Text>
-                  <Text style={styles.chartDataWeight}>{entry.weight} kg</Text>
-                </View>
-              ))}
-            </View>
-          </SmartFitCard>
+          {/* Weight Progression Chart */}
+          <ProgressChart
+            data={mockWeightProgression.map(entry => ({
+              date: entry.date,
+              value: entry.weight,
+              label: entry.exercise
+            }))}
+            title="Weight Progression"
+            yAxisLabel="Weight (kg)"
+            xAxisLabel="Date"
+            color={theme.colors.accent}
+            showTrend={true}
+            style={styles.chartCard}
+          />
 
           {/* Recent Workouts */}
           <View style={styles.recentWorkoutsSection}>
@@ -295,46 +290,6 @@ const styles = StyleSheet.create({
   },
   chartCard: {
     marginBottom: theme.spacing[6],
-  },
-  chartTitle: {
-    ...theme.typography.h3,
-    color: theme.colors.text,
-    marginBottom: theme.spacing[4],
-  },
-  chartPlaceholder: {
-    height: 200,
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.medium,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: theme.spacing[4],
-  },
-  chartPlaceholderText: {
-    ...theme.typography.h3,
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing[2],
-  },
-  chartSubtext: {
-    ...theme.typography.caption,
-    color: theme.colors.textSecondary,
-  },
-  chartData: {
-    gap: theme.spacing[2],
-  },
-  chartDataItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: theme.spacing[1],
-  },
-  chartDataDate: {
-    ...theme.typography.body,
-    color: theme.colors.textSecondary,
-  },
-  chartDataWeight: {
-    ...theme.typography.body,
-    color: theme.colors.text,
-    fontWeight: '600',
   },
   recentWorkoutsSection: {
     marginBottom: theme.spacing[6],

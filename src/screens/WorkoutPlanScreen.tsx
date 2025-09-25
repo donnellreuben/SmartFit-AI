@@ -148,11 +148,7 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({ navigation }) => 
     
     startWorkout(activePlan);
     setWorkoutStarted(true);
-    Alert.alert(
-      'Workout Started!',
-      'Your personalized workout plan is ready. Good luck!',
-      [{ text: 'Let\'s Go!', onPress: () => {} }]
-    );
+    navigation.navigate('ActiveWorkout');
   };
 
   const handleGeneratePlan = async () => {
