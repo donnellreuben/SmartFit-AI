@@ -164,7 +164,10 @@ class SubscriptionService {
     try {
       const statusData = await AsyncStorage.getItem('subscription_status');
       if (statusData) {
-        this.subscriptionStatus = { ...this.subscriptionStatus, ...JSON.parse(statusData) };
+        this.subscriptionStatus = {
+          ...this.subscriptionStatus,
+          ...JSON.parse(statusData),
+        };
       }
     } catch (error) {
       console.error('Failed to load subscription status:', error);
@@ -173,7 +176,10 @@ class SubscriptionService {
 
   private async saveSubscriptionStatus() {
     try {
-      await AsyncStorage.setItem('subscription_status', JSON.stringify(this.subscriptionStatus));
+      await AsyncStorage.setItem(
+        'subscription_status',
+        JSON.stringify(this.subscriptionStatus),
+      );
     } catch (error) {
       console.error('Failed to save subscription status:', error);
     }
@@ -203,7 +209,10 @@ class SubscriptionService {
   }
 
   isTrialActive(): boolean {
-    if (!this.subscriptionStatus.isTrial || !this.subscriptionStatus.trialEndDate) {
+    if (
+      !this.subscriptionStatus.isTrial ||
+      !this.subscriptionStatus.trialEndDate
+    ) {
       return false;
     }
     return new Date() < new Date(this.subscriptionStatus.trialEndDate);
@@ -211,7 +220,7 @@ class SubscriptionService {
 
   getDaysRemainingInTrial(): number {
     if (!this.isTrialActive()) return 0;
-    
+
     const trialEnd = new Date(this.subscriptionStatus.trialEndDate!);
     const now = new Date();
     const diffTime = trialEnd.getTime() - now.getTime();
@@ -244,7 +253,10 @@ class SubscriptionService {
       return { success: true, transactionId: `trial_${Date.now()}` };
     } catch (error) {
       console.error('Failed to start trial:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   }
 
@@ -258,7 +270,7 @@ class SubscriptionService {
       // In a real app, you'd integrate with App Store/Play Store
       // For now, simulate the purchase
       const purchaseResult = await this.simulatePurchase(plan);
-      
+
       if (purchaseResult.success) {
         this.subscriptionStatus = {
           ...this.subscriptionStatus,
@@ -279,7 +291,10 @@ class SubscriptionService {
       return purchaseResult;
     } catch (error) {
       console.error('Failed to purchase subscription:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   }
 
@@ -305,26 +320,34 @@ class SubscriptionService {
       // In a real app, you'd restore from App Store/Play Store
       // For now, simulate restoration
       const restoredStatus = await this.simulateRestorePurchases();
-      
+
       if (restoredStatus.success) {
-        this.subscriptionStatus = { ...this.subscriptionStatus, ...restoredStatus.data };
+        this.subscriptionStatus = {
+          ...this.subscriptionStatus,
+          ...restoredStatus.data,
+        };
         await this.saveSubscriptionStatus();
       }
 
       return restoredStatus;
     } catch (error) {
       console.error('Failed to restore purchases:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   }
 
   // MARK: - Feature Access
   hasFeatureAccess(feature: keyof SubscriptionFeatures): boolean {
     const currentPlan = this.getCurrentPlan();
-    if (!currentPlan) return false;
+    // Default to free plan if no active subscription
+    const plan = currentPlan || this.getPlanById('free');
+    if (!plan) return false;
 
     // Free plan limitations
-    if (currentPlan.id === 'free') {
+    if (plan.id === 'free') {
       switch (feature) {
         case 'unlimitedWorkouts':
           return false; // Limited to 3 workouts per week
@@ -352,7 +375,11 @@ class SubscriptionService {
     }
 
     // Premium and Elite plans have all features
-    return currentPlan.id === 'premium' || currentPlan.id === 'premium_yearly' || currentPlan.id === 'elite';
+    return (
+      plan.id === 'premium' ||
+      plan.id === 'premium_yearly' ||
+      plan.id === 'elite'
+    );
   }
 
   getAvailableFeatures(): SubscriptionFeatures {
@@ -406,7 +433,7 @@ class SubscriptionService {
         ...record,
         timestamp: new Date().toISOString(),
       });
-      
+
       await AsyncStorage.setItem('billing_history', JSON.stringify(history));
     } catch (error) {
       console.error('Failed to add billing record:', error);
@@ -416,27 +443,30 @@ class SubscriptionService {
   // MARK: - Helper Methods
   private calculateEndDate(plan: SubscriptionPlan): string {
     const endDate = new Date();
-    
+
     if (plan.interval === 'monthly') {
       endDate.setMonth(endDate.getMonth() + 1);
     } else if (plan.interval === 'yearly') {
       endDate.setFullYear(endDate.getFullYear() + 1);
     }
-    
+
     return endDate.toISOString();
   }
 
-  private async simulatePurchase(_plan: SubscriptionPlan): Promise<PurchaseResult> {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Simulate 90% success rate
-    const success = Math.random() > 0.1;
-    
+  private async simulatePurchase(
+    _plan: SubscriptionPlan,
+  ): Promise<PurchaseResult> {
+    // No delay for testing
+
+    // Simulate 100% success rate for testing
+    const success = true;
+
     if (success) {
       return {
         success: true,
-        transactionId: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        transactionId: `txn_${Date.now()}_${Math.random()
+          .toString(36)
+          .substr(2, 9)}`,
         receipt: `receipt_${Date.now()}`,
       };
     } else {
@@ -447,13 +477,14 @@ class SubscriptionService {
     }
   }
 
-  private async simulateRestorePurchases(): Promise<PurchaseResult & { data?: any }> {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Simulate 80% success rate for restoration
-    const success = Math.random() > 0.2;
-    
+  private async simulateRestorePurchases(): Promise<
+    PurchaseResult & { data?: any }
+  > {
+    // No delay for testing
+
+    // Simulate 100% success rate for testing
+    const success = true;
+
     if (success) {
       return {
         success: true,
@@ -461,8 +492,12 @@ class SubscriptionService {
         data: {
           isActive: true,
           planId: 'premium',
-          startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
-          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+          startDate: new Date(
+            Date.now() - 30 * 24 * 60 * 60 * 1000,
+          ).toISOString(), // 30 days ago
+          endDate: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000,
+          ).toISOString(), // 30 days from now
           isTrial: false,
           autoRenew: true,
         },
@@ -485,13 +520,21 @@ class SubscriptionService {
   }> {
     try {
       const history = await this.getBillingHistory();
-      
-      const totalRevenue = history.reduce((sum, record) => sum + (record.amount || 0), 0);
+
+      const totalRevenue = history.reduce(
+        (sum, record) => sum + (record.amount || 0),
+        0,
+      );
       const activeSubscriptions = this.subscriptionStatus.isActive ? 1 : 0;
-      const trialConversions = history.filter(record => record.type === 'trial_conversion').length;
-      const churnRate = history.filter(record => record.type === 'cancellation').length / Math.max(history.length, 1);
-      const averageRevenuePerUser = totalRevenue / Math.max(activeSubscriptions, 1);
-      
+      const trialConversions = history.filter(
+        record => record.type === 'trial_conversion',
+      ).length;
+      const churnRate =
+        history.filter(record => record.type === 'cancellation').length /
+        Math.max(history.length, 1);
+      const averageRevenuePerUser =
+        totalRevenue / Math.max(activeSubscriptions, 1);
+
       return {
         totalRevenue,
         activeSubscriptions,
