@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { AppNavigator } from '../../navigation/AppNavigator';
+import AppNavigator from '../../navigation/AppNavigator';
 
 // Mock all services
 jest.mock('../../services/subscriptionService', () => ({
@@ -260,7 +260,7 @@ describe('Complete User Journey E2E', () => {
 
   describe('Error Handling Journey', () => {
     it('should handle network errors gracefully', async () => {
-      const { getByText } = renderWithNavigation();
+      const { getByText, getByPlaceholderText } = renderWithNavigation();
       
       // Simulate network error during login
       const emailInput = getByPlaceholderText('Email');
