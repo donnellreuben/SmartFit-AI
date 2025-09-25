@@ -12,6 +12,8 @@ import WorkoutPlanScreen from '../screens/WorkoutPlanScreen';
 import ActiveWorkoutScreen from '../screens/ActiveWorkoutScreen';
 import WorkoutSummaryScreen from '../screens/WorkoutSummaryScreen';
 import ProgressTrackingScreen from '../screens/ProgressTrackingScreen';
+import SubscriptionScreen from '../screens/SubscriptionScreen';
+import AnalyticsDashboardScreen from '../screens/AnalyticsDashboardScreen';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -22,6 +24,8 @@ export type RootStackParamList = {
   ActiveWorkout: undefined;
   WorkoutSummary: undefined;
   ProgressTracking: undefined;
+  Subscription: undefined;
+  AnalyticsDashboard: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -90,6 +94,16 @@ const AppNavigator: React.FC = () => {
           name="ProgressTracking" 
           component={ProgressTrackingScreen}
           options={{ title: 'Progress Tracking' }}
+        />
+        <Stack.Screen 
+          name="Subscription" 
+          component={SubscriptionScreen}
+          options={{ title: 'Subscription Plans' }}
+        />
+        <Stack.Screen 
+          name="AnalyticsDashboard" 
+          component={AnalyticsDashboardScreen}
+          options={{ title: 'Analytics Dashboard' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
