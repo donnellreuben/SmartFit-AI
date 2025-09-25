@@ -12,7 +12,6 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 import { SmartFitButton } from '../components/SmartFitButton';
 import { ExerciseCard } from '../components/ExerciseCard';
 import { Exercise } from '../types/exercise';
-// import { aiService } from '../services/aiService';
 import { useWorkoutStore } from '../store/workoutStore';
 import { theme } from '../constants/theme';
 
@@ -167,6 +166,7 @@ const WorkoutPlanScreen: React.FC<WorkoutPlanScreenProps> = ({
       const goals = ['Muscle Gain', 'Strength'];
       const duration = 45;
 
+      // Generate workout plan using AI service (handled in store)
       await generateWorkoutPlan({
         goals,
         availableEquipment: equipment,

@@ -273,30 +273,42 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         set({ isLoading: true, error: null });
 
         try {
-          // Simulate AI workout plan generation
-          await new Promise<void>(resolve => setTimeout(resolve, 2000));
+          // Import AI service dynamically to avoid circular dependencies
+          const { aiService } = await import('../services/aiService');
 
-          // Mock workout plan based on equipment and goals
-          const mockPlan: WorkoutPlan = {
-            id: `plan-${Date.now()}`,
-            name: 'AI Generated Workout',
-            exercises: [], // Would be populated by AI
-            estimatedDuration: params.duration,
-            difficulty: params.difficulty as
+          // Use AI service to generate workout plan
+          const aiPlan = await aiService.generateWorkoutPlan({
+            equipment: params.availableEquipment,
+            goals: params.goals,
+            fitnessLevel: params.difficulty as
               | 'beginner'
               | 'intermediate'
               | 'advanced',
-            createdAt: new Date().toISOString(),
+            availableTime: params.duration,
+            preferences: {
+              intensity: 'medium',
+              focusAreas: ['Full Body'],
+            },
+          });
+
+          // Convert AI plan to our workout plan format
+          const workoutPlan: WorkoutPlan = {
+            id: aiPlan.id,
+            name: aiPlan.name,
+            exercises: aiPlan.exercises,
+            estimatedDuration: aiPlan.estimatedDuration,
+            difficulty: aiPlan.difficulty,
+            createdAt: aiPlan.createdAt,
             isActive: true,
           };
 
           set({
-            workoutPlans: [mockPlan, ...get().workoutPlans],
-            activePlan: mockPlan,
+            workoutPlans: [workoutPlan, ...get().workoutPlans],
+            activePlan: workoutPlan,
             isLoading: false,
           });
 
-          return mockPlan;
+          return workoutPlan;
         } catch (error) {
           set({
             isLoading: false,

@@ -1,3 +1,5 @@
+import { Exercise } from '../types/exercise';
+
 export interface EquipmentDetection {
   id: string;
   name: string;
@@ -45,14 +47,14 @@ export interface WorkoutExercise {
   name: string;
   muscleGroups: string[];
   equipment: string[];
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   sets: number;
   reps: string;
   restTime: number;
   videoUrl: string;
   instructions: string[];
   tips: string[];
-  alternatives: string[];
+  alternatives: Exercise[];
 }
 
 class AIService {
@@ -131,7 +133,7 @@ class AIService {
           name: 'Dumbbell Bench Press',
           muscleGroups: ['Chest', 'Shoulders', 'Triceps'],
           equipment: ['Dumbbells', 'Bench'],
-          difficulty: 'intermediate',
+          difficulty: 'Intermediate',
           sets: 4,
           reps: '8-12',
           restTime: 90,
@@ -147,18 +149,14 @@ class AIService {
             "Don't bounce the weights off your chest",
             'Focus on controlled movement',
           ],
-          alternatives: [
-            'Barbell Bench Press',
-            'Push-ups',
-            'Incline Dumbbell Press',
-          ],
+          alternatives: [],
         },
         {
           id: 'squats-1',
           name: 'Goblet Squats',
           muscleGroups: ['Quadriceps', 'Glutes', 'Hamstrings'],
           equipment: ['Dumbbell'],
-          difficulty: 'beginner',
+          difficulty: 'Beginner',
           sets: 3,
           reps: '12-15',
           restTime: 60,
@@ -174,18 +172,14 @@ class AIService {
             "Don't let your knees cave inward",
             'Go as low as comfortable',
           ],
-          alternatives: [
-            'Bodyweight Squats',
-            'Barbell Squats',
-            'Bulgarian Split Squats',
-          ],
+          alternatives: [],
         },
         {
           id: 'rows-1',
           name: 'Bent-Over Dumbbell Rows',
           muscleGroups: ['Back', 'Biceps'],
           equipment: ['Dumbbells'],
-          difficulty: 'intermediate',
+          difficulty: 'Intermediate',
           sets: 3,
           reps: '10-12',
           restTime: 75,
@@ -201,7 +195,7 @@ class AIService {
             'Engage your lats to initiate the movement',
             "Don't use momentum",
           ],
-          alternatives: ['Barbell Rows', 'Cable Rows', 'Inverted Rows'],
+          alternatives: [],
         },
       ];
 
@@ -276,7 +270,7 @@ class AIService {
           name: 'Romanian Deadlifts',
           muscleGroups: ['Hamstrings', 'Glutes', 'Lower Back'],
           equipment: ['Dumbbells'],
-          difficulty: 'intermediate',
+          difficulty: 'Intermediate',
           sets: 3,
           reps: '10-12',
           restTime: 90,
@@ -292,11 +286,7 @@ class AIService {
             "Don't round your back",
             'Feel the stretch in your hamstrings',
           ],
-          alternatives: [
-            'Conventional Deadlifts',
-            'Good Mornings',
-            'Hip Thrusts',
-          ],
+          alternatives: [],
         },
       ];
     } catch (error) {
